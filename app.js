@@ -1,4 +1,9 @@
 var express = require('express');
+
+const mongoose = require('mongoose');
+mongoose.Promise = Promise;
+mongoose.connect('mongodb://localhost/citizen-engagement-api');
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
