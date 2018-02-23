@@ -13,11 +13,6 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
-const mongoose = require('mongoose');
-mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/citizen-engagement-api');
-
-
 var app = express();
 
 // view engine setup
