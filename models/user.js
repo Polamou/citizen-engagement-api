@@ -9,4 +9,6 @@ const userSchema = new Schema({
   createdAt: {type: Date, default: Date.now}
 });
 
+userSchema.index({ firstName: 1, lastName: 1  }, { unique: true });
+
 module.exports = mongoose.model('User', userSchema);
