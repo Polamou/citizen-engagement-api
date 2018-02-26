@@ -9,6 +9,9 @@ router.post('/', function(req, res, next) {
   // Save that document
   newUser.save(function(err, savedUser) {
     if (err) {
+      if (err.name === 'ValidationError'){
+        err.status = 422;
+      }
       if (err.code === 11000){
         err.status = 409;
       }
