@@ -1,3 +1,4 @@
+const GeoJSON = require('mongoose-geojson-schema');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -6,7 +7,7 @@ const issueSchema = new Schema({
   status: {type: String, enum:['new','inProgress', 'canceled', 'completed'], default: 'new'},
   description: {type: String, maxlength: [1000, 'Too many letters'], required: false},
   imageUrl: {type: String, maxlength: [500, 'Too many letters'], required: false},
-  coordonnees: {type: "Point", coordinates:[number]},
+  coordonnees: mongoose.Schema.Types.Point,
   tags: [{ type: String, maxlength: 50 }],
   createdAt: {type: Date, default: Date.now},
   updateAt: {type: Date},
