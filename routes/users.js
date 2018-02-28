@@ -19,6 +19,15 @@ router.post('/', function(req, res, next) {
   });
 });
 
+
+/**
+ * @api {get} /users/ Request the list of users
+ * @apiName GetUsers
+ * @apiGroup Users
+ *
+ *
+ * @apiUse userInSuccessResponse
+ */
 /* GET users listing */
 router.get('/', function(req, res, next) {
   User.find().sort('name').exec(function(err, users) {
