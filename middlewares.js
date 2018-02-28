@@ -1,21 +1,14 @@
+const User = require('./models/user');
 module.exports ={
-  prettifyErrors: function(err){
-        if (err.name === 'ValidationError'){
-          err.status = 422;
-        }
-        if (err.code === 11000){
-          err.status = 409;
-          err.message = "Dupplicate error, firstName and lastName already in use."
-        }
-        return err;
-    },
-    getUserById: function(req,res,next){
-      const User = require('./models/user');
+    findUserById: function(req,res,next){
       User.findById(req.params.id).exec(function(err, user){
         if (err){
-          return(next(err));
+          return next(err);
         } else if (!user){
-          return res.status(404).send('No person found with ID' + req.params.id);
+          let err = new Error();
+          err.message = 'No person found with ID ' + req.params.id;
+          err.status = 404;
+          return next(err);
         }
         req.user = user;
         next();

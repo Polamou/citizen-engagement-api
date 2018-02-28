@@ -46,14 +46,19 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  //Prettify errors
+  if (err.name === 'ValidationError'){
+    err.status = 422;
+  }
+  if (err.code === 11000){
+    err.status = 409;
+    err.message = "Dupplicate error, firstName and lastName already in use."
+  }
   // render the error page
   res.status(err.status || 500);
   //res.render('error');
   res.json({
-    "error": {
-      "code": err.status,
-      "message": err.message
-    }
+    "message": err.message
   });
 });
 

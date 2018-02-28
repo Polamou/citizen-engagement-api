@@ -11,7 +11,7 @@ router.post('/', function(req, res, next) {
   // Save that document
   newUser.save(function(err, savedUser) {
     if (err){
-      return next(middlewares.prettifyErrors(err));
+      return next(err);
     }
     // Send the saved document in the response
     res.send(savedUser);
@@ -35,6 +35,7 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
 
 /* PATCH user by id */
 router.patch('/:id', middlewares.findUserById, function(req, res, next) {
+
 });
 
 /* DELETE user by id */
