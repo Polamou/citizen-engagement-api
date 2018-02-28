@@ -63,20 +63,6 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
   res.send(req.user);
 });
 
-<<<<<<< HEAD
-
-/* PATCH user by id */
-router.patch('/:id', middlewares.findUserById, function(req, res, next) {
-  let updatedUser = req.user;
-  updatedUser.set(req.body);
-  updatedUser.save(function(err, savedUser){
-    if (err){
-      return next(err);
-    }
-    res.send(savedUser);
-  });
-
-=======
 /**
  * @api {patch} /users/:id Update a user's information
  * @apiName PatchUser
@@ -96,7 +82,6 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
     }
     res.send(updatedUser);
   });
->>>>>>> dev-users-routes
 });
 /**
  * @api {delete} /users/:id Delete a user
