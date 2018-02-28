@@ -54,9 +54,21 @@ router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
 
 });
   
-  /* DELETE issue by id */
-  router.delete('/:id', function(req, res, next) {
-    res.send('DELETE issue by id');
+/* DELETE issue by id */
+router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
+  Issue.findByIdAndRemove(req.params.id, function(err, issue) {
+    if (err) {
+      next(err);
+    } else if (!issue) {
+      let err = new Error();
+      err.message = 'No issue found with ID ' + req.params.id;
+      err.status = 404;
+      return next(err);
+    } else {
+      res.status(204);
+      res.send();
+    }
   });
+});
   
   module.exports = router;
