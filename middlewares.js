@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const User = require('./models/user');
 module.exports ={
     findUserById: function(req,res,next){
@@ -13,5 +14,9 @@ module.exports ={
         req.user = user;
         next();
       });
+    },
+    filterUserReq: function (req, res, next){
+      req.filteredBody = _.pick(req.body,['firstName','lastName','role']);
+      next();
     }
   }
