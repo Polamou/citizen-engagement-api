@@ -3,7 +3,26 @@ const router = express.Router();
 const Issue = require('../models/issue');
 const middlewares = require('../middlewares');
 
-/* POST new Issue */
+/**
+ * @api {post} /issues Create a new issue
+ * @apiName PostIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {String="new","inProgress","canceled","completed"} status The status of the issue:
+ * 
+ * * Defaults to "new" when the issue is created
+ * * Change from "new" to "inProgress" to indicate that a city employee is working on the issue
+ * * Change from "new" or "inProgress" to "canceled" to indicate that a city employee has determined this is not a real issue
+ * * Change from "inProgress" to "completed" to indicate that the issue has been resolved
+ *
+ * @apiParam {String{0..1000}} [description] A detailed description of the issue
+ * @apiParam {String{0..500}} [imageUrl] A URL to a picture of the issue
+ * @apiParam {Point} geolocation The coordinates indicating where the issue is, e.g. : { type: "Point", coordinates: [ 40, 5 ] }
+ * 
+ * @apiParam {String[]} tags User-defined tags to describe the issue (e.g. "accident", "broken")
+ * 
+ * @apiUse issueInSuccessResponse
+ */
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body
     const newIssue = new Issue(req.body);
@@ -72,3 +91,7 @@ router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
 });
   
   module.exports = router;
+
+  /**
+ * @apiDefine issueInSuccessResponse
+ */
