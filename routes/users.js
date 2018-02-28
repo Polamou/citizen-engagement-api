@@ -10,7 +10,7 @@ router.post('/', function(req, res, next) {
   const newUser = new User(req.body);
   // Save that document
   newUser.save(function(err, savedUser) {
-    if (err){
+    if (err) {
       return next(err);
     }
     // Send the saved document in the response
