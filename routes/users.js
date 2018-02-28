@@ -42,8 +42,17 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
   res.send(req.user);
 });
 
+
 /* PATCH user by id */
 router.patch('/:id', middlewares.findUserById, function(req, res, next) {
+  let updatedUser = req.user;
+  updatedUser.set(req.body);
+  updatedUser.save(function(err, savedUser){
+    if (err){
+      return next(err);
+    }
+    res.send(savedUser);
+  });
 
 });
 /**
