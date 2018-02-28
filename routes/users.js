@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
+const middlewares = require('../middlewares');
 
 /* POST new user */
 router.post('/', function(req, res, next) {
@@ -8,14 +9,8 @@ router.post('/', function(req, res, next) {
   const newUser = new User(req.body);
   // Save that document
   newUser.save(function(err, savedUser) {
-    if (err) {
-      if (err.name === 'ValidationError'){
-        err.status = 422;
-      }
-      if (err.code === 11000){
-        err.status = 409;
-      }
-      return next(err);
+    if (err){
+      return next(middlewares.prettifyErrors(err));
     }
     // Send the saved document in the response
     res.send(savedUser);
