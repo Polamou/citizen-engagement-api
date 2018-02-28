@@ -46,7 +46,16 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
 router.patch('/:id', middlewares.findUserById, function(req, res, next) {
 
 });
-
+/**
+ * @api {delete} /users/:id Delete a user
+ * @apiName DeleteUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *    HTTP/1.1 204 No Content
+ */
 /* DELETE user by id */
 router.delete('/:id', middlewares.findUserById, function(req, res, next) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
@@ -69,7 +78,7 @@ module.exports = router;
 
 /**
  * @apiDefine userInSuccessResponse
- * @apiSuccess {String="citizen","manager"}  Role of the user
+ * @apiSuccess {String="citizen","manager"} role Role of the user
  * @apiSuccess {String} firstName  First name of the user
  * @apiSuccess {String} lastName  Last name of the user
  * @apiSuccess {String} id  Unique identifier of the user
