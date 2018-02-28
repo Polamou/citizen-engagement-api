@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const errors = require ('./errors');
 const User = require('./models/user');
 module.exports ={
     findUserById: function(req,res,next){
@@ -6,10 +7,7 @@ module.exports ={
         if (err){
           return next(err);
         } else if (!user){
-          let err = new Error();
-          err.message = 'No person found with ID ' + req.params.id;
-          err.status = 404;
-          return next(err);
+          return next(errors.notFound('User not found'));
         }
         req.user = user;
         next();

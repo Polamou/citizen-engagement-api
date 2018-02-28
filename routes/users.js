@@ -1,9 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const errors = require ('../errors');
 const middlewares = require('../middlewares');
 
-
+/**
+ * @api {post} /users/ Create a new user
+ * @apiName PostUser
+ * @apiGroup User
+ *
+ * @apiUse userParams
+ *
+ * @apiSuccess (201 Created) {String} role Role of the user
+ * @apiSuccess (201 Created) {String} firstName  First name of the user
+ * @apiSuccess (201 Created) {String} lastName  Last name of the user
+ * @apiSuccess (201 Created) {String} id  Unique identifier of the user
+ */
 /* POST new user */
 router.post('/', middlewares.filterUserReq, function(req, res, next) {
   // Create a new document from the JSON in the request body
@@ -18,7 +30,6 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
     res.send(savedUser);
   });
 });
-
 
 /**
  * @api {get} /users/ Request the list of users
@@ -59,7 +70,7 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  *
  * @apiUse userParams
  * @apiUse userInSuccessResponse
- */
+*/
 /* PATCH user by id */
 router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, function(req, res, next) {
   let userToPatch = req.user;
@@ -83,15 +94,12 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  *    HTTP/1.1 204 No Content
  */
 /* DELETE user by id */
-router.delete('/:id', middlewares.findUserById, function(req, res, next) {
+router.delete('/:id', function(req, res, next) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if (err) {
       next(err);
     } else if (!user) {
-      let err = new Error();
-      err.message = 'No person found with ID ' + req.params.id;
-      err.status = 404;
-      return next(err);
+      return next(errors.notFound('No user found with ID '+req.params.id));
     } else {
       res.status(204);
       res.send();
@@ -111,9 +119,13 @@ module.exports = router;
  */
 
  /**
-  * @apiDefine userParams
+  * @apiDefine userId
   * @apiParam {Number} id Unique identifier of the user
-  * @apiParam {String{2..20}} firstName First name of the user
-  * @apiParam {String{2..20}} lastName Last name of the user
-  * @apiParam {String="manager","citizen"} role Role of the user
   */
+
+  /**
+   * @apiDefine userParams
+   * @apiParam {String{2..20}} firstName First name of the user
+   * @apiParam {String{2..20}} lastName Last name of the user
+   * @apiParam {String="manager","citizen"} role Role of the user
+   */
