@@ -19,4 +19,12 @@ const issueSchema = new Schema({
 // correspond effectivement à l'id d'un user existant
 issueSchema.plugin(idvalidator);
 
+issueSchema.methods.toJSON = function(){
+  let obj = this.toObject();
+  obj.id = obj._id;
+  delete obj._id;
+  delete obj.__v;
+  return obj;
+};
+
 module.exports = mongoose.model('Issue', issueSchema);
