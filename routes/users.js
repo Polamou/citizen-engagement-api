@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Issue = require('../models/issue');
 const errors = require ('../errors');
 const middlewares = require('../middlewares');
 
@@ -25,7 +26,7 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
     if (err) {
       return next(err);
     }
-    // Send the saved document in the response
+    // Send the saved document in the response with correct status
     res.status(201);
     res.send(savedUser);
   });
@@ -41,12 +42,27 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
  */
 /* GET users listing */
 router.get('/', function(req, res, next) {
-  User.find().sort('name').exec(function(err, users) {
-    if (err) {
+  const queryUsers = User.find();
+
+  queryUsers.sort('name').exec( function (err,users){
+    if (err){
       return next(err);
     }
-    res.send(users);
-  });
+    countIssuesByUser(users, function(err,results){
+      if(err){
+        return next(err);
+      }
+      const usersJson = users.map(user => user.toJSON());
+
+      results.forEach(function(result){
+        const user = usersJson.find(user => user.id == result._id.toString());
+        user.issuesCount = result.issuesCount;
+      });
+
+      res.send(usersJson);
+    });
+  })
+
 });
 
 /**
@@ -54,7 +70,7 @@ router.get('/', function(req, res, next) {
  * @apiName GetUser
  * @apiGroup User
  *
- * @apiParam {Number} id Unique identifier of the user
+ * @apiUse userId
  *
  * @apiUse userInSuccessResponse
  */
@@ -88,7 +104,7 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  * @apiName DeleteUser
  * @apiGroup User
  *
- * @apiParam {Number} id Unique identifier of the user
+ * @apiUse userId
  *
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 204 No Content
@@ -109,6 +125,29 @@ router.delete('/:id', function(req, res, next) {
 
 module.exports = router;
 
+function countIssuesByUser(users, callback){
+  if (users.length <= 0){
+    return callback(undefined,[]);
+  }
+  //Aggregate issues by issuer
+  Issue.aggregate([
+    {
+      $match:{
+        userId: {
+          $in: users.map(user => user._id)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: '$userId',
+        issuesCount:{
+          $sum:1
+        }
+      }
+    }
+  ],callback);
+}
 
 /**
  * @apiDefine userInSuccessResponse
