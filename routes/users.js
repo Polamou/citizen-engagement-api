@@ -18,7 +18,6 @@ router.post('/', function(req, res, next) {
   });
 });
 
-
 /* GET users listing */
 router.get('/', function(req, res, next) {
   User.find().sort('name').exec(function(err, users) {
@@ -30,17 +29,16 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET user by id */
-router.get('/:id', middlewares.getUserById, function(req, res, next) {
+router.get('/:id', middlewares.findUserById, function(req, res, next) {
   res.send(req.user);
 });
 
 /* PATCH user by id */
-router.patch('/:id', middlewares.getUserById, function(req, res, next) {
-  res.send('PATCH user by id');
+router.patch('/:id', middlewares.findUserById, function(req, res, next) {
 });
 
 /* DELETE user by id */
-router.delete('/:id', middlewares.getUserById, function(req, res, next) {
+router.delete('/:id', middlewares.findUserById, function(req, res, next) {
   res.send('DELETE user by id');
 });
 
