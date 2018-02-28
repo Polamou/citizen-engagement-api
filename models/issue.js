@@ -10,7 +10,7 @@ const issueSchema = new Schema({
   coordonnees: mongoose.Schema.Types.Point,
   tags: [{ type: String, maxlength: 50 }],
   createdAt: {type: Date, default: Date.now},
-  updateAt: {type: Date},
+  updatedAt: {type: Date},
 });
 
 
