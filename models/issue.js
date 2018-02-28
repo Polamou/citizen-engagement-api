@@ -1,4 +1,5 @@
 const GeoJSON = require('mongoose-geojson-schema');
+const idvalidator = require('mongoose-id-validator');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -11,7 +12,11 @@ const issueSchema = new Schema({
   tags: [{ type: String, maxlength: 50}],
   createdAt: {type: Date, default: Date.now},
   updatedAt: {type: Date},
+  userId: {type: Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
+// Le plugin 'mongoose-id-validator' permet de vérifier si l'userId
+// correspond effectivement à l'id d'un user existant
+issueSchema.plugin(idvalidator);
 
 module.exports = mongoose.model('Issue', issueSchema);
