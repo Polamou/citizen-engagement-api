@@ -28,6 +28,15 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/**
+ * @api {get} /users/:id Request a user's information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiUse userInSuccessResponse
+ */
 /* GET user by id */
 router.get('/:id', middlewares.findUserById, function(req, res, next) {
   res.send(req.user);
@@ -56,3 +65,12 @@ router.delete('/:id', middlewares.findUserById, function(req, res, next) {
 });
 
 module.exports = router;
+
+
+/**
+ * @apiDefine userInSuccessResponse
+ * @apiSuccess {String="citizen","manager"}  Role of the user
+ * @apiSuccess {String} firstName  First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess {String} id  Unique identifier of the user
+ */
