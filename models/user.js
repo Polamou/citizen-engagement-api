@@ -11,4 +11,13 @@ const userSchema = new Schema({
 
 userSchema.index({ firstName: 1, lastName: 1  }, { unique: true });
 
+userSchema.methods.toJSON = function(){
+  let obj = this.toObject();
+  obj.id = obj._id;
+  delete obj._id;
+  delete obj.createdAt;
+  delete obj.__v;
+  return obj;
+};
+
 module.exports = mongoose.model('User', userSchema);
