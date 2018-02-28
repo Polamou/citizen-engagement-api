@@ -27,10 +27,19 @@ router.post('/', function(req, res, next) {
     });
   });
   
-  /* GET issue by id */
-  router.get('/:id', function(req, res, next) {
-    res.send('GET issue by id');
-  });
+/**
+ * @api {get} /issues/:id Request an issue's information
+ * @apiName GetIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {Number} id Unique identifier of the issue
+ *
+ * @apiUse issueInSuccessResponse
+ */
+/* GET issue by id */
+router.get('/:id', middlewares.findIssueById, function(req, res, next) {
+  res.send(req.issue);
+});
   
   /* PUT issue by id */
   router.put('/:id', function(req, res, next) {
