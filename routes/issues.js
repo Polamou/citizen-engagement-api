@@ -41,10 +41,18 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
   res.send(req.issue);
 });
   
-  /* PUT issue by id */
-  router.put('/:id', function(req, res, next) {
-    res.send('PUT issue by id');
+/* PATCH user by id */
+router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
+  let updatedIssue = req.issue;
+  updatedIssue.set(req.body);
+  updatedIssue.save(function(err, savedIssue){
+    if (err){
+      return next(err);
+    }
+    res.send(savedIssue);
   });
+
+});
   
   /* DELETE issue by id */
   router.delete('/:id', function(req, res, next) {
