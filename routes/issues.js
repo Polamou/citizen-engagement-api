@@ -1,6 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const Issue = require('../models/issue');
+const middlewares = require('../middlewares');
 
 /* POST new Issue */
 router.post('/', function(req, res, next) {
