@@ -22,6 +22,8 @@ issueSchema.plugin(idvalidator);
 issueSchema.methods.toJSON = function(){
   let obj = this.toObject();
   obj.id = obj._id;
+  obj.userHref = "/users/"+obj.userId;
+  delete obj.userId;
   delete obj._id;
   delete obj.__v;
   return obj;
