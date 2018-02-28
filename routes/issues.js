@@ -10,12 +10,6 @@ router.post('/', function(req, res, next) {
     // Save that document
     newIssue.save(function(err, savedIssue) {
       if (err) {
-        if (err.name === 'ValidationError'){
-          err.status = 422;
-        }
-        if (err.code === 11000){
-          err.status = 409;
-        }
         return next(err);
       }
       // Send the saved document in the response
