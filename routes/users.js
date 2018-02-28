@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const User = require('../models/user');
 const middlewares = require('../middlewares');
+
 
 /* POST new user */
 router.post('/', function(req, res, next) {
@@ -17,6 +18,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
+
 /* GET users listing */
 router.get('/', function(req, res, next) {
   User.find().sort('name').exec(function(err, users) {
@@ -28,17 +30,17 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET user by id */
-router.get('/:id', function(req, res, next) {
-  res.send('GET user by id');
+router.get('/:id', middlewares.getUserById, function(req, res, next) {
+  res.send(req.user);
 });
 
-/* PUT user by id */
-router.put('/:id', function(req, res, next) {
-  res.send('PUT user by id');
+/* PATCH user by id */
+router.patch('/:id', middlewares.getUserById, function(req, res, next) {
+  res.send('PATCH user by id');
 });
 
 /* DELETE user by id */
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', middlewares.getUserById, function(req, res, next) {
   res.send('DELETE user by id');
 });
 
