@@ -7,10 +7,10 @@ const issueSchema = new Schema({
   status: {type: String, enum:['new','inProgress', 'canceled', 'completed'], default: 'new'},
   description: {type: String, maxlength: [1000, 'Too many letters'], required: false},
   imageUrl: {type: String, maxlength: [500, 'Too many letters'], required: false},
-  coordonnees: mongoose.Schema.Types.Point,
-  tags: [{ type: String, maxlength: 50 }],
+  coordonnees: {type: mongoose.Schema.Types.Point, required: true},
+  tags: [{ type: String, maxlength: 50}],
   createdAt: {type: Date, default: Date.now},
-  updateAt: {type: Date},
+  updatedAt: {type: Date},
 });
 
 
