@@ -15,7 +15,6 @@ userSchema.methods.toJSON = function(){
   let obj = this.toObject();
   obj.id = obj._id;
   delete obj._id;
-  delete obj.createdAt;
   delete obj.__v;
   return obj;
 };
