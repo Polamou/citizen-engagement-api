@@ -10,9 +10,9 @@ const issueSchema = new Schema({
   imageUrl: {type: String, maxlength: [500, 'Too many letters'], required: false},
   geolocation: {type: mongoose.Schema.Types.Point, required: true},
   tags: [{ type: String, maxlength: 50}],
+  userId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   createdAt: {type: Date, default: Date.now},
-  updatedAt: {type: Date},
-  userId: {type: Schema.Types.ObjectId, ref: 'User', required: true}
+  updatedAt: {type: Date}
 });
 
 // Le plugin 'mongoose-id-validator' permet de vérifier si l'userId
