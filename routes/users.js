@@ -16,7 +16,6 @@ const middlewares = require('../middlewares');
  * @apiSuccess (201 Created) {String} lastName  Last name of the user
  * @apiSuccess (201 Created) {String} id  Unique identifier of the user
  */
-/* POST new user */
 router.post('/', middlewares.filterUserReq, function(req, res, next) {
   // Create a new document from the JSON in the request body
   const newUser = new User(req.filteredBody);
@@ -34,7 +33,7 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
 /**
  * @api {get} /users/ Request the list of users
  * @apiName GetUsers
- * @apiGroup Users
+ * @apiGroup User
  *
  *
  * @apiUse userInSuccessResponse
@@ -54,7 +53,7 @@ router.get('/', function(req, res, next) {
  * @apiName GetUser
  * @apiGroup User
  *
- * @apiParam {Number} id Unique identifier of the user
+ * @apiParam {String} id Unique identifier of the user
  *
  * @apiUse userInSuccessResponse
  */
