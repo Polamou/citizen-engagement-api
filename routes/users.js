@@ -14,6 +14,7 @@ router.post('/', function(req, res, next) {
       return next(err);
     }
     // Send the saved document in the response
+    res.status(201);
     res.send(savedUser);
   });
 });
@@ -42,9 +43,25 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
   res.send(req.user);
 });
 
+/**
+ * @api {patch} /users/:id Update a user's information
+ * @apiName PatchUser
+ * @apiGroup User
+ *
+ * @apiUse userParams
+ * @apiUse userInSuccessResponse
+ */
 /* PATCH user by id */
 router.patch('/:id', middlewares.findUserById, function(req, res, next) {
-
+  let userToPatch = req.user;
+  let reqBody = req.body;
+  userToPatch.set(reqBody);
+  userToPatch.save(function(err,updatedUser){
+    if (err){
+      return next(err);
+    }
+    res.send(updatedUser);
+  });
 });
 /**
  * @api {delete} /users/:id Delete a user
@@ -78,8 +95,16 @@ module.exports = router;
 
 /**
  * @apiDefine userInSuccessResponse
- * @apiSuccess {String="citizen","manager"} role Role of the user
+ * @apiSuccess {String} role Role of the user
  * @apiSuccess {String} firstName  First name of the user
  * @apiSuccess {String} lastName  Last name of the user
  * @apiSuccess {String} id  Unique identifier of the user
  */
+
+ /**
+  * @apiDefine userParams
+  * @apiParam {Number} id Unique identifier of the user
+  * @apiParam {String{2..20}} firstName First name of the user
+  * @apiParam {String{2..20}} lastName Last name of the user
+  * @apiParam {String="manager","citizen"} role Role of the user
+  */
