@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api-documentation', express.static('docs'));
 
 app.use('/', index);
 app.use('/users', users);
