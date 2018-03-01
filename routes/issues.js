@@ -122,10 +122,6 @@ function queryIssues(req){
 }
 
 
-  /**
- * @apiDefine issueInSuccessResponse
- */
-=======
 /**
 * @apiDefine issueInSuccessResponse
 
@@ -146,5 +142,3 @@ function queryIssues(req){
  * @apiSuccess {Date} createdAt The date at which the issue was reported
  * @apiSuccess {Date} updatedAt The date at which the issue was last modified
 */
-
->>>>>>> bf66fb485be2c28c8eb4c442d43b0547efe08d98
