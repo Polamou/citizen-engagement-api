@@ -1,6 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
+const ObjectId = mongoose.Types.ObjectId;
 const Issue = require('../models/issue');
+const User = require('../models/user');
 const middlewares = require('../middlewares');
 
 /**
@@ -9,7 +12,7 @@ const middlewares = require('../middlewares');
  * @apiGroup Issue
  *
  * @apiParam {String="new","inProgress","canceled","completed"} status The status of the issue:
- * 
+ *
  * * Defaults to "new" when the issue is created
  * * Change from "new" to "inProgress" to indicate that a city employee is working on the issue
  * * Change from "new" or "inProgress" to "canceled" to indicate that a city employee has determined this is not a real issue
@@ -18,9 +21,9 @@ const middlewares = require('../middlewares');
  * @apiParam {String{0..1000}} [description] A detailed description of the issue
  * @apiParam {String{0..500}} [imageUrl] A URL to a picture of the issue
  * @apiParam {Point} geolocation The coordinates indicating where the issue is, e.g. : { type: "Point", coordinates: [ 40, 5 ] }
- * 
+ *
  * @apiParam {String[]} tags User-defined tags to describe the issue (e.g. "accident", "broken")
- * 
+ *
  * @apiUse issueInSuccessResponse
  */
 router.post('/', function(req, res, next) {
@@ -35,17 +38,21 @@ router.post('/', function(req, res, next) {
       res.send(savedIssue);
     });
   });
-  
+
+
   /* GET issues listing */
   router.get('/', function(req, res, next) {
-    Issue.find().sort('createdAt').exec(function(err, issues) {
+    let query = queryIssues(req);
+
+
+    query.sort('createdAt').exec(function(err, issues) {
       if (err) {
         return next(err);
       }
       res.send(issues);
     });
   });
-  
+
 /**
  * @api {get} /issues/:id Request an issue's information
  * @apiName GetIssue
@@ -59,7 +66,7 @@ router.post('/', function(req, res, next) {
 router.get('/:id', middlewares.findIssueById, function(req, res, next) {
   res.send(req.issue);
 });
-  
+
 /* PATCH user by id */
 router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
   let updatedIssue = req.issue;
@@ -72,7 +79,7 @@ router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
   });
 
 });
-  
+
 /* DELETE issue by id */
 router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
   Issue.findByIdAndRemove(req.params.id, function(err, issue) {
@@ -89,8 +96,26 @@ router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
     }
   });
 });
-  
+
   module.exports = router;
+
+/*
+* This function returns the issues with the given parameters from the request
+*
+*/
+function queryIssues(req){
+  let query = Issue.find()
+
+  if(Array.isArray(req.query.user)){
+    const users = req.query.user.filter(ObjectId.isValid);
+    query = query.where('userId').in(users);
+  } else if (ObjectId.isValid(req.query.user)){
+    query = query.where('userId').equals(req.query.user);
+  }
+    return query;
+
+}
+
 
   /**
  * @apiDefine issueInSuccessResponse
