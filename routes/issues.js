@@ -103,7 +103,6 @@ router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
 
   module.exports = router;
 
-<<<<<<< HEAD
 /*
 * This function returns the issues with the given parameters from the request
 *
