@@ -39,10 +39,16 @@ router.post('/', function(req, res, next) {
     });
   });
 
+
 /**
  * @api {get} /issues/ Request the list of issues
  * @apiName GetIssues
  * @apiGroup Issue
+ *
+ * @apiExample Example
+ *     GET /issues?user=5a969cf53429176baf1ccc81 HTTP/1.1
+ *
+ * @apiParam {String} [user] Select only the issues issued by the person with the specified ID (this parameter can be given multiple times)
  *
  * @apiUse issueInSuccessResponse
  */
