@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
 const Issue = require('../models/issue');
@@ -55,7 +56,6 @@ router.post('/', function(req, res, next) {
   router.get('/', function(req, res, next) {
     let query = queryIssues(req);
 
-
     query.sort('createdAt').exec(function(err, issues) {
       if (err) {
         return next(err);
@@ -78,7 +78,7 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
 });
 
 /* PATCH user by id */
-router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
+router.patch('/:id', middlewares.findIssueById, middlewares.validateStatusChange, function(req, res, next) {
   let updatedIssue = req.issue;
   updatedIssue.set(req.body);
   updatedIssue.save(function(err, savedIssue){
@@ -125,42 +125,6 @@ function queryIssues(req){
     return query;
 
 }
-
-/* Pagination */
-
-// Send response (including total/links) here...
-router.get('/', function(req, res, next) {
-  Issue.find().count(function(err, total) {
-    if (err) { return next(err); };
-    let query = Issue.find();
-    // Parse query parameters and apply pagination here...
-
-      // Parse the "page" param (default to 1 if invalid)
-      let page = parseInt(req.query.page, 2);
-      if (isNaN(page) || page < 1) {
-        page = 1;
-      }
-      // Parse the "pageSize" param (default to 100 if invalid)
-      let pageSize = parseInt(req.query.pageSize, 2);
-      if (isNaN(pageSize) || pageSize < 0 || pageSize > 100) {
-        pageSize = 100;
-      }
-      // Apply skip and limit to select the correct page of elements
-      query = query.skip((page - 1) * pageSize).limit(pageSize);
-      // ...
-    });
-    query.exec(function(err, issues) {
-      if (err) { return next(err); }
-      // Send JSON envelope with data
-      res.send({
-        page: page,
-        pageSize: pageSize,
-        total: total,
-        data: issues
-      });
-    });
-  });
-
 
 /**
 * @apiDefine issueInSuccessResponse
