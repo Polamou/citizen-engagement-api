@@ -16,7 +16,11 @@ module.exports = {
     });
   },
   filterUserReq: function(req, res, next) {
-    req.filteredBody = _.pick(req.body, ['firstName', 'lastName', 'role']);
+    req.bodyFiltered = _.pick(req.body, ['firstName', 'lastName', 'role']);
+    next();
+  },
+  filterIssueReq: function(req, res, next) {
+    req.bodyFiltered = _.pick(req.body, ['status','description','imageUrl', 'geolocation', 'tags']);
     next();
   },
   /*
@@ -25,7 +29,10 @@ module.exports = {
    */
   validateStatusChange: function(req, res, next) {
     const actualStatus = req.issue.status;
-    const wantedStatus = req.body.status;
+    let wantedStatus = req.body.status;
+    if (_.isUndefined(wantedStatus)){
+      return next();
+    }
     const possibleOptions = {
       "new": [
         "inProgress",
@@ -36,10 +43,10 @@ module.exports = {
         "completed"
       ]
     }
-    if (!_.includes(possibleOptions[actualStatus], wantedStatus)) {
-        next(errors.unprocessableError("The status change from "+actualStatus+" to "+wantedStatus+" is not allowed."));
+    if (_.includes(possibleOptions[actualStatus], wantedStatus)) {
+        return next();
     } else{
-      next();
+      return next(errors.unprocessableError("The status change from "+actualStatus+" to "+wantedStatus+" is not allowed."));
     }
   },
   findIssueById: function(req, res, next) {

@@ -27,9 +27,9 @@ const middlewares = require('../middlewares');
  *
  * @apiUse issueInSuccessResponse
  */
-router.post('/', function(req, res, next) {
+router.post('/', middlewares.filterIssueReq, function(req, res, next) {
     // Create a new document from the JSON in the request body
-    const newIssue = new Issue(req.body);
+    const newIssue = new Issue(req.bodyFiltered);
     // Save that document
     newIssue.save(function(err, savedIssue) {
       if (err) {
@@ -78,9 +78,9 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
 });
 
 /* PATCH user by id */
-router.patch('/:id', middlewares.findIssueById, middlewares.validateStatusChange, function(req, res, next) {
+router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, middlewares.validateStatusChange, function(req, res, next) {
   let updatedIssue = req.issue;
-  updatedIssue.set(req.body);
+  updatedIssue.set(req.bodyFiltered);
   updatedIssue.save(function(err, savedIssue){
     if (err){
       return next(err);
