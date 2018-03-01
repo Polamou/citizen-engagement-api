@@ -5,8 +5,10 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   firstName: {type: String, minlength: [2, 'Too few letters'], maxlength: [20, 'Too many letters']},
   lastName: {type: String, minlength: [2, 'Too few letters'], maxlength: [20, 'Too many letters']},
-  role: {type: String, enum:['citizen','manager'], default: 'citizen'},
-  createdAt: {type: Date, default: Date.now}
+  role: {type: String, enum:['citizen','manager'], default: 'citizen'}
+},
+{
+  timestamps: true
 });
 
 userSchema.index({ firstName: 1, lastName: 1  }, { unique: true });
