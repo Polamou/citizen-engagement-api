@@ -17,7 +17,6 @@ const middlewares = require('../middlewares');
  * @apiSuccess (201 Created) {String} lastName  Last name of the user
  * @apiSuccess (201 Created) {String} id  Unique identifier of the user
  */
-/* POST new user */
 router.post('/', middlewares.filterUserReq, function(req, res, next) {
   // Create a new document from the JSON in the request body
   const newUser = new User(req.filteredBody);
@@ -35,12 +34,10 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
 /**
  * @api {get} /users/ Request the list of users
  * @apiName GetUsers
- * @apiGroup Users
- *
+ * @apiGroup User
  *
  * @apiUse userInSuccessResponse
  */
-/* GET users listing */
 router.get('/', function(req, res, next) {
   const queryUsers = User.find();
 
@@ -74,7 +71,6 @@ router.get('/', function(req, res, next) {
  *
  * @apiUse userInSuccessResponse
  */
-/* GET user by id */
 router.get('/:id', middlewares.findUserById, function(req, res, next) {
   res.send(req.user);
 });
@@ -87,7 +83,6 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  * @apiUse userParams
  * @apiUse userInSuccessResponse
 */
-/* PATCH user by id */
 router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, function(req, res, next) {
   let userToPatch = req.user;
   let reqBody = req.filteredBody;
@@ -109,7 +104,6 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 204 No Content
  */
-/* DELETE user by id */
 router.delete('/:id', function(req, res, next) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if (err) {
@@ -159,7 +153,7 @@ function countIssuesByUser(users, callback){
 
  /**
   * @apiDefine userId
-  * @apiParam {Number} id Unique identifier of the user
+  * @apiParam {String} id Unique identifier of the user
   */
 
   /**
