@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
 const Issue = require('../models/issue');
@@ -55,7 +56,6 @@ router.post('/', function(req, res, next) {
   router.get('/', function(req, res, next) {
     let query = queryIssues(req);
 
-
     query.sort('createdAt').exec(function(err, issues) {
       if (err) {
         return next(err);
@@ -78,7 +78,7 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
 });
 
 /* PATCH user by id */
-router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
+router.patch('/:id', middlewares.findIssueById, middlewares.validateStatusChange, function(req, res, next) {
   let updatedIssue = req.issue;
   updatedIssue.set(req.body);
   updatedIssue.save(function(err, savedIssue){
@@ -125,7 +125,6 @@ function queryIssues(req){
     return query;
 
 }
-
 
 /**
 * @apiDefine issueInSuccessResponse
