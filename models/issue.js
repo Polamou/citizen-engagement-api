@@ -12,7 +12,7 @@ const issueSchema = new Schema({
   tags: [{ type: String, maxlength: 50}],
   userId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   createdAt: {type: Date, default: Date.now},
-  updatedAt: {type: Date}
+  updatedAt: {type: Date} 
 });
 
 // Le plugin 'mongoose-id-validator' permet de vérifier si l'userId
