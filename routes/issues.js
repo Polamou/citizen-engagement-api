@@ -54,14 +54,29 @@ router.post('/', function(req, res, next) {
  * @apiUse issueInSuccessResponse
  */
   router.get('/', function(req, res, next) {
-    let query = queryIssues(req);
+    const countQuery = queryIssues(req);
 
-    query.sort('createdAt').exec(function(err, issues) {
-      if (err) {
+    countQuery.count(function(err,total){
+      if (err){
         return next(err);
       }
-      res.send(issues);
+
+      // On prépare la requête comme dans l'API exemple
+      let query = queryIssues(req);
+
+      // Utilisation de notre middleware de pagination
+      query = middlewares.queryPaginate('issues', query, total, req, res);
+
+      // Tri par date de création
+      query.sort('createdAt').exec(function(err, issues) {
+        if (err) {
+          return next(err);
+        }
+        res.send(issues);
+      });
     });
+
+
   });
 
 /**

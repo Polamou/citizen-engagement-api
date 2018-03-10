@@ -2,6 +2,9 @@ const _ = require('lodash');
 const errors = require('./errors');
 const User = require('./models/user');
 const Issue = require('./models/issue');
+const formatLinkHeader = require('format-link-header');
+
+
 
 module.exports = {
   findUserById: function(req, res, next) {
@@ -43,7 +46,7 @@ module.exports = {
 
     // URL
     const links = {};
-    const url = "/" + resourceHref;
+    const url = "https://polamou-citizen-engagement-api.herokuapp.com/" + resourceHref;
     const maxPage = Math.ceil(total / pageSize);
 
     // Add first & prev links if current page is not the first one
