@@ -137,6 +137,9 @@ function queryIssues(req){
   } else if (ObjectId.isValid(req.query.user)){
     query = query.where('userId').equals(req.query.user);
   }
+  if (req.query.status){
+    query = query.where('status').equals(req.query.status);
+  }
     return query;
 
 }
