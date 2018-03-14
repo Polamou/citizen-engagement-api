@@ -108,11 +108,11 @@ module.exports = {
         "canceled",
         "completed"
       ]
-    }
-    if (_.includes(possibleOptions[actualStatus], wantedStatus) || actualStatus === wantedStatus) {
-        return next();
-    } else{
-      return next(errors.unprocessableError("The status change from "+actualStatus+" to "+wantedStatus+" is not allowed."));
+      }
+      if (_.includes(possibleOptions[actualStatus], wantedStatus) || actualStatus === wantedStatus) {
+          return next();
+      } else{
+        return next(errors.unprocessableError("The status change from "+actualStatus+" to "+wantedStatus+" is not allowed."));
     }
   }
 }
