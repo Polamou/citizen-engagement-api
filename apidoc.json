@@ -1,7 +1,10 @@
 {
   "name": "Citizen Engagement API",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": " This is a project for the WebServices course @ HEIG-VD",
   "title": "Citizen Engagement API / Documentation",
-  "url" : "http://polamou-citizen-engagement-api.herokuapp.com"
+  "url" : "http://polamou-citizen-engagement-api.herokuapp.com",
+  "header": {
+    "filename": "APIDOC.md"
+}
 }
