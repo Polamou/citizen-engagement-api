@@ -86,7 +86,7 @@ module.exports = {
     next();
   },
   filterIssueReq: function(req, res, next) {
-    req.bodyFiltered = _.pick(req.body, ['status','description','imageUrl', 'geolocation', 'tags']);
+    req.bodyFiltered = _.pick(req.body, ['status','description','imageUrl', 'geolocation', 'tags','userId']);
     next();
   },
   /*
