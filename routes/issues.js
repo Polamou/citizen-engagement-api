@@ -64,6 +64,7 @@ const middlewares = require('../middlewares');
  * @apiUse issueInRequestBody
  * @apiUse issueInPostRequestBody
  * @apiUse issueInResponseBody
+ * @apiUse issueInPostResponseBody
  * @apiUse issueValidationError
  * 
  */
@@ -95,7 +96,6 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  *
  * @apiParam {String} [user] Select only the issues issued by the person with the specified ID (this parameter can be given multiple times)
  *
- * @apiUse issueInSuccessResponse
  */
   router.get('/', function(req, res, next) {
     const countQuery = queryIssues(req);
@@ -229,7 +229,7 @@ function queryIssues(req){
  * `{ type: "Point", coordinates: [ 40, 5 ] }`
  *
  * @apiParam (Request body) {String[]} tags User-defined tags to describe the issue (e.g. "accident", "broken")
- * @apiParam (Request body) {String} userId A string corresponding to an existing user [12-byte hexadecimal string ObjectId value](https://docs.mongodb.com/manual/reference/method/ObjectId/), e.g. : `507f191e810c19729de860ea`
+ * @apiParam (Request body) {String} userId A string corresponding to an existing user's [12-byte hexadecimal string ObjectId value](https://docs.mongodb.com/manual/reference/method/ObjectId/), e.g. : `507f191e810c19729de860ea`
  * 
 */
 
@@ -253,13 +253,6 @@ function queryIssues(req){
 /**
  * @apiDefine issueInResponseBody
  * 
- * @apiSuccess (Response body) {String} status The status of the issue:
- *
- * * `"new"` : default value when the issue is created
- * * `"inProgress"` : indicates that a city employee is working on the issue
- * * `"canceled"` : indicates that a city employee has determined this is not a real issue
- * * `"completed"` : indicates that the issue has been resolved
- *
  * @apiSuccess (Response body) {String} [description] A detailed description of the issue
  * @apiSuccess (Response body) {String} [imageUrl] A URL to a picture of the issue
  * @apiSuccess (Response body) {Point} geolocation A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is
@@ -269,6 +262,25 @@ function queryIssues(req){
  *
  * @apiSuccess (Response body) {Date} createdAt The date at which the issue was reported
  * @apiSuccess (Response body) {Date} [updatedAt] The date at which the issue was last modified
+*/
+
+/**
+ * @apiDefine issueInPostResponseBody
+ * 
+ * @apiSuccess (Response body) {String} status The status of the issue
+ *
+*/
+
+/**
+ * @apiDefine issueInGetResponseBody
+ * 
+ * @apiSuccess (Response body) {String} status The status of the issue:
+ *
+ * * `"new"` : default value when the issue is created
+ * * `"inProgress"` : indicates that a city employee is working on the issue
+ * * `"canceled"` : indicates that a city employee has determined this is not a real issue
+ * * `"completed"` : indicates that the issue has been resolved
+ *
 */
 
 /**
