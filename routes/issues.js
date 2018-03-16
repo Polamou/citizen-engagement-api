@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
 const Issue = require('../models/issue');
@@ -66,9 +67,9 @@ const middlewares = require('../middlewares');
  * @apiUse issueValidationError
  * 
  */
-router.post('/', function(req, res, next) {
+router.post('/', middlewares.filterIssueReq, function(req, res, next) {
     // Create a new document from the JSON in the request body
-    const newIssue = new Issue(req.body);
+    const newIssue = new Issue(req.bodyFiltered);
     // Save that document
     newIssue.save(function(err, savedIssue) {
       if (err) {
@@ -97,15 +98,29 @@ router.post('/', function(req, res, next) {
  * @apiUse issueInSuccessResponse
  */
   router.get('/', function(req, res, next) {
-    let query = queryIssues(req);
+    const countQuery = queryIssues(req);
 
-
-    query.sort('createdAt').exec(function(err, issues) {
-      if (err) {
+    countQuery.count(function(err,total){
+      if (err){
         return next(err);
       }
-      res.send(issues);
+
+      // On prépare la requête comme dans l'API exemple
+      let query = queryIssues(req);
+
+      // Utilisation de notre middleware de pagination
+      query = middlewares.queryPaginate('issues', query, total, req, res);
+
+      // Tri par date de création
+      query.sort('createdAt').exec(function(err, issues) {
+        if (err) {
+          return next(err);
+        }
+        res.send(issues);
+      });
     });
+
+
   });
 
 /**
@@ -153,9 +168,9 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
 });
 
 /* PATCH user by id */
-router.patch('/:id', middlewares.findIssueById, function(req, res, next) {
+router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, middlewares.validateStatusChange, function(req, res, next) {
   let updatedIssue = req.issue;
-  updatedIssue.set(req.body);
+  updatedIssue.set(req.bodyFiltered);
   updatedIssue.save(function(err, savedIssue){
     if (err){
       return next(err);
@@ -197,10 +212,12 @@ function queryIssues(req){
   } else if (ObjectId.isValid(req.query.user)){
     query = query.where('userId').equals(req.query.user);
   }
+  if (req.query.status){
+    query = query.where('status').equals(req.query.status);
+  }
     return query;
 
 }
-
 
 /**
  * @apiDefine issueInRequestBody
