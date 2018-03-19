@@ -13,11 +13,37 @@ const middlewares = require('../middlewares');
  * @apiDescription Registers a new issue.
  *
  * @apiUse userParams
+ * 
+ * @apiExample Example
+ * POST /users HTTP/1.1
+ * Content-Type: application/json
+ * 
+{
+	"firstName": "Marie-Jeanne",
+	"lastName": "Rochat",
+	"role": "citizen"
+}
  *
  * @apiSuccess (201 Created) {String} role Role of the user
  * @apiSuccess (201 Created) {String} firstName  First name of the user
  * @apiSuccess (201 Created) {String} lastName  Last name of the user
+ * @apiSuccess (201 Created) {String} createdAt  The date at which the user was created
+ * @apiSuccess (201 Created) {String} updatedAt  The date at which the user was last updated
  * @apiSuccess (201 Created) {String} id  Unique identifier of the user
+ *  
+ * @apiSuccessExample 201 Created
+ * HTTP/1.1 201 Created
+ * Content-Type: application/json
+ *
+{
+    "firstName": "Marie-Jeanne",
+    "lastName": "Rochat",
+    "role": "citizen",
+    "createdAt": "2018-03-19T11:46:21.427Z",
+    "updatedAt": "2018-03-19T11:46:21.427Z",
+    "id": "5aafa30d3ad2ed2160c9363c"
+}
+ *
  */
 router.post('/', middlewares.filterUserReq, function(req, res, next) {
   // Create a new document from the JSON in the request body
