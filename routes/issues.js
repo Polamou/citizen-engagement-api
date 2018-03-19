@@ -206,6 +206,16 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiParam (URL path parameters) {String} id Unique identifier of the issue
  *
  * @apiUse issueInResponseBody
+ * 
+ * @apiError {Object} 404/NotFound The ID specified is well-formed but no issue was found with this ID.
+ *
+ * @apiErrorExample {json} 404 Not Found
+ * HTTP/1.1 404 Not Found
+ * Content-Type: application/json
+ * 
+{
+    "message": "No issue found with ID 5aaf71ca3ad2ed2160c93638"
+}
  */
 router.get('/:id', middlewares.findIssueById, function(req, res, next) {
   res.send(req.issue);
