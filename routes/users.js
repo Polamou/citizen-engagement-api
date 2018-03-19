@@ -9,6 +9,8 @@ const middlewares = require('../middlewares');
  * @api {post} /users/ Create a new user
  * @apiName PostUser
  * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Registers a new issue.
  *
  * @apiUse userParams
  *
@@ -32,9 +34,11 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
 });
 
 /**
- * @api {get} /users/ Request the list of users
+ * @api {get} /users/ Retrieve the list of users
  * @apiName GetUsers
  * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Retrieves a list of users ordered by date of creation (in descendant order).
  *
  * @apiUse userInSuccessResponse
  */
@@ -63,9 +67,11 @@ router.get('/', function(req, res, next) {
 });
 
 /**
- * @api {get} /users/:id Request a user's information
+ * @api {get} /users/:id Retrieve a user
  * @apiName GetUser
  * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Retrieves a single user.
  *
  * @apiUse userId
  *
@@ -76,9 +82,11 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
 });
 
 /**
- * @api {patch} /users/:id Update a user's information
+ * @api {patch} /users/:id Update a user
  * @apiName PatchUser
  * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Update a single user.
  *
  * @apiUse userParams
  * @apiUse userInSuccessResponse
@@ -98,10 +106,12 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  * @api {delete} /users/:id Delete a user
  * @apiName DeleteUser
  * @apiGroup User
+ * @apiVersion 1.0.0
+ * @apiDescription Delete a single user.
  *
  * @apiUse userId
  *
- * @apiSuccessExample {json} Success-Response:
+ * @apiSuccessExample {json} Success Response
  *    HTTP/1.1 204 No Content
  */
 router.delete('/:id', function(req, res, next) {
@@ -149,6 +159,7 @@ function countIssuesByUser(users, callback){
  * @apiSuccess {String} firstName  First name of the user
  * @apiSuccess {String} lastName  Last name of the user
  * @apiSuccess {String} id  Unique identifier of the user
+ * @apiSuccess {Number} [issuesCount] Number of issues associated with this user
  */
 
  /**
