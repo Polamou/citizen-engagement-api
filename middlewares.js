@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const errors = require('./errors');
 const User = require('./models/user');
 const Issue = require('./models/issue');
@@ -19,6 +21,7 @@ module.exports = {
     });
   },
   findIssueById: function(req, res, next) {
+    if (ObjectId.isValid(req.params.id)){
     Issue.findById(req.params.id).exec(function(err, issue) {
       if (err) {
         return next(err);
@@ -28,7 +31,10 @@ module.exports = {
       req.issue = issue;
       next();
     });
-  },
+  } else{
+    return next(errors.unprocessableError(req.params.id+' is not a valid ID.'));
+  }  
+},
   queryPaginate: function(resourceHref, query, total, req, res) {
 
     // Parse the "page" param (default to 1 if invalid)
