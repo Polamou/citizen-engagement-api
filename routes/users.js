@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Issue = require('../models/issue');
-const errors = require ('../errors');
+const errors = require('../errors');
 const middlewares = require('../middlewares');
 
 /**
@@ -41,26 +41,25 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
 router.get('/', function(req, res, next) {
   const queryUsers = User.find();
 
-  queryUsers.sort('name').exec( function (err,users){
-    if (err){
+  queryUsers.sort('name').exec(function(err, users) {
+    if (err) {
       return next(err);
     }
-    countIssuesByUser(users, function(err,results){
-      if(err){
+
+    countIssuesByUser(users, function(err, results) {
+      if (err) {
         return next(err);
       }
       const usersJson = users.map(user => user.toJSON());
 
-      results.forEach(function(result){
-        const user = usersJson.find(user => user.links[0].href == "/users/"+result._id.toString());
+      results.forEach(function(result) {
+        const user = usersJson.find(user => user.links[0].href == "/users/" + result._id.toString());
         user.issuesCount = result.issuesCount;
-        if (user.issuesCount > 0){
-          user.links.push(
-            {
-            "rel" : "issues",
-            "href" : "/issues/?user="+result._id.toString()
-          }
-        );
+        if (user.issuesCount > 0) {
+          user.links.push({
+            "rel": "issues",
+            "href": "/issues/?user=" + result._id.toString()
+          });
         }
       });
 
@@ -80,7 +79,13 @@ router.get('/', function(req, res, next) {
  * @apiUse userInSuccessResponse
  */
 router.get('/:id', middlewares.findUserById, function(req, res, next) {
-  res.send(req.user);
+  countIssuesByUser([req.user], function(err, results) {
+    if (err) {
+      return next(err);
+    }
+
+    res.send(req.user);
+  });
 });
 
 /**
@@ -90,13 +95,13 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  *
  * @apiUse userParams
  * @apiUse userInSuccessResponse
-*/
+ */
 router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, function(req, res, next) {
   let userToPatch = req.user;
   let reqBody = req.bodyFiltered;
   userToPatch.set(reqBody);
-  userToPatch.save(function(err,updatedUser){
-    if (err){
+  userToPatch.save(function(err, updatedUser) {
+    if (err) {
       return next(err);
     }
     res.send(updatedUser);
@@ -117,7 +122,7 @@ router.delete('/:id', function(req, res, next) {
     if (err) {
       next(err);
     } else if (!user) {
-      return next(errors.notFound('No user found with ID '+req.params.id));
+      return next(errors.notFound('No user found with ID ' + req.params.id));
     } else {
       res.status(204);
       res.send();
@@ -127,14 +132,13 @@ router.delete('/:id', function(req, res, next) {
 
 module.exports = router;
 
-function countIssuesByUser(users, callback){
-  if (users.length <= 0){
-    return callback(undefined,[]);
+function countIssuesByUser(users, callback) {
+  if (users.length <= 0) {
+    return callback(undefined, []);
   }
   //Aggregate issues by issuer
-  Issue.aggregate([
-    {
-      $match:{
+  Issue.aggregate([{
+      $match: {
         userId: {
           $in: users.map(user => user._id)
         }
@@ -143,12 +147,12 @@ function countIssuesByUser(users, callback){
     {
       $group: {
         _id: '$userId',
-        issuesCount:{
-          $sum:1
+        issuesCount: {
+          $sum: 1
         }
       }
     }
-  ],callback);
+  ], callback);
 }
 
 /**
@@ -159,14 +163,14 @@ function countIssuesByUser(users, callback){
  * @apiSuccess {String} id  Unique identifier of the user
  */
 
- /**
-  * @apiDefine userId
-  * @apiParam {String} id Unique identifier of the user
-  */
+/**
+ * @apiDefine userId
+ * @apiParam {String} id Unique identifier of the user
+ */
 
-  /**
-   * @apiDefine userParams
-   * @apiParam {String{2..20}} firstName First name of the user
-   * @apiParam {String{2..20}} lastName Last name of the user
-   * @apiParam {String="manager","citizen"} role Role of the user
-   */
+/**
+ * @apiDefine userParams
+ * @apiParam {String{2..20}} firstName First name of the user
+ * @apiParam {String{2..20}} lastName Last name of the user
+ * @apiParam {String="manager","citizen"} role Role of the user
+ */
