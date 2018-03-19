@@ -142,6 +142,9 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
         "userHref": "/users/5aabe04b68f49609145bfcd3"
     }
 ]
+
+ * @apiUse issue_422_userId_ValidationError
+ *
  */
   router.get('/', function(req, res, next) {
     const countQuery = queryIssues(req);
@@ -207,9 +210,11 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  *
  * @apiParam (URL path parameters) {String} id Unique identifier of the issue
  *
- * @apiUse issueInGetOrPatchResponseBody
  * @apiUse issueInResponseBody
- * @apiUse issueInGetOrPatchValidationError
+ * @apiUse issueInGetOrPatchResponseBody
+ * 
+ * @apiUse issue_404_issueId_ValidationError
+ * @apiUse issue_422_issueId_ValidationError
  * 
  */
 router.get('/:id', middlewares.findIssueById, function(req, res, next) {
@@ -263,9 +268,13 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
  *
  * @apiUse issueInRequestBody
  * @apiUse issueInUpdateRequestBody
- * @apiUSe issueInGetOrPatchResponseBody
+ * 
  * @apiUse issueInResponseBody
- * @apiUse issueInGetOrPatchValidationError
+ * @apiUse issueInGetOrPatchResponseBody
+ * 
+ * @apiUse issue_404_issueId_ValidationError
+ * @apiUse issue_422_issueId_ValidationError
+ * 
  *
  */
 router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, middlewares.validateStatusChange, function(req, res, next) {
@@ -280,7 +289,27 @@ router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, midd
 
 });
 
-/* DELETE issue by id */
+
+/**
+ * @api {delete} /issues/:id Delete an issue
+ * @apiName DeleteIssue
+ * @apiGroup Issue
+ * @apiVersion 1.0.0
+ * @apiDescription Delete a single issue.
+ * 
+ * @apiExample Example
+ * DELETE /issues/5aaf71ca3ad2ed2160c93639 HTTP/1.1
+ * 
+ * @apiSuccessExample Success Response
+ * HTTP/1.1 204 No content
+ * Content-Type: application/json
+ *
+ * @apiParam (URL path parameters) {String} id Unique identifier of the issue
+ *
+ * @apiUse issue_404_issueId_ValidationError
+ * @apiUse issue_422_issueId_ValidationError
+ *
+ */
 router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
   Issue.findByIdAndRemove(req.params.id, function(err, issue) {
     if (err) {
@@ -398,7 +427,7 @@ function queryIssues(req){
  */
 
 /**
- * @apiDefine issueInGetOrPatchValidationError
+ * @apiDefine issue_404_issueId_ValidationError
  *
  * @apiError {Object} 404/NotFound The ID specified is well-formed but no issue was found with this ID.
  *
@@ -409,6 +438,10 @@ function queryIssues(req){
 {
     "message": "No issue found with ID 5aaf71ca3ad2ed2160c93638"
 }
+ */
+
+/**
+ * @apiDefine issue_422_userId_ValidationError
  *
  * @apiError {Object} 422/UnprocessableEntity The specified userId is invalid
  *
@@ -418,6 +451,21 @@ function queryIssues(req){
  * 
  * {
  *    "message": "Issue validation failed: userId: Path `userId` is invalid."
+ * }
+ * 
+ */
+
+/**
+ * @apiDefine issue_422_issueId_ValidationError
+ * 
+ * @apiError {Object} 422/UnprocessableEntity The specified issueId is invalid
+ *
+ * @apiErrorExample {json} 422 Unprocessable Entity
+ * HTTP/1.1 422 Unprocessable Entity
+ * Content-Type: application/json
+ * 
+ * {
+ *    "message": "Issue validation failed: issueId: Path `issueId` is invalid."
  * }
  * 
  */
