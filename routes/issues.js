@@ -18,49 +18,57 @@ const middlewares = require('../middlewares');
  * POST /issues HTTP/1.1
  * Content-Type: application/json
  * 
- * {
- *   "description": "Le lampadaire au croisement de la rue du Lac et de la rue des Casernes ne s'allume pas.",
- *   "imageUrl": "https://www.example.com/image.jpg",
- *   "geolocation": {
- *       "type": "Point",
- *       "coordinates": [
- *           46.780338,
- *           6.637956
- *       ]
- *   },
- *   "tags": [
- *       "lampadaire",
- *       "éclairage public",
- *       "ampoule cassée"
- *   ],
- *   "userId": "5a902740d1c0ec3f685e8802"
- * }
+{
+  "description": "Il y a un campement de canards sans-papiers près du canal.",
+  "imageUrl": "https://www.example.com/image98.jpg",
+  "geolocation": {
+      "type": "Point",
+      "coordinates": [
+          46.780345,
+          6.637863
+      ]
+  },
+  "tags": [
+      "canard",
+      "canal",
+      "spécisme"
+  ],
+  "userId": "5aabe03a68f49609145bfcd2"
+}
  * 
  * @apiSuccessExample 201 Created
  * HTTP/1.1 201 Created
  * Content-Type: application/json
  *
- * {
- *   "description": "Le lampadaire au croisement de la rue du Lac et de la rue des Casernes ne s'allume pas.",
- *   "imageUrl": "https://www.example.com/image.jpg",
- *   "geolocation": {
- *       "type": "Point",
- *       "coordinates": [
- *           46.780338,
- *           6.637956
- *       ]
- *   },
- *   "tags": [
- *       "lampadaire",
- *       "éclairage public",
- *       "ampoule cassée"
- *   ],
- *   "status": "new",
- *   "createdAt": "2018-03-01T09:05:51.126Z",
- *   "updatedAt": "2018-03-01T09:05:51.126Z",
- *   "id": "5a97c26fdba0205d0c99cdc3",
- *   "userHref": "/users/5a902740d1c0ec3f685e8802"
- * }
+{
+    "description": "Il y a un campement de canards sans-papiers près du canal.",
+    "imageUrl": "https://www.example.com/image98.jpg",
+    "geolocation": {
+        "type": "Point",
+        "coordinates": [
+            46.780345,
+            6.637863
+        ]
+    },
+    "tags": [
+        "canard",
+        "canal",
+        "spécisme"
+    ],
+    "status": "new",
+    "createdAt": "2018-03-19T14:33:22.986Z",
+    "updatedAt": "2018-03-19T14:33:22.986Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/issues/5aafca325d2af51c587c49fa"
+        },
+        {
+            "rel": "user",
+            "href": "/users/5aabe03a68f49609145bfcd2"
+        }
+    ]
+}
  *
  * @apiUse issueInRequestBody
  * @apiUse issueInPostRequestBody
@@ -105,14 +113,14 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiSuccessExample 200 OK
 [
     {
-        "status": "new",
+        "status": "inProgress",
         "tags": [
             "tag",
             "graffiti",
             "château"
         ],
-        "description": "Il y a un tag sur le mur du Château",
-        "imageUrl": "https://www.example.com/image2.jpg",
+        "description": "Il y a deux tags très laids sur le mur du Château",
+        "imageUrl": "https://www.example.com/image23.jpg",
         "geolocation": {
             "type": "Point",
             "coordinates": [
@@ -121,9 +129,17 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
             ]
         },
         "createdAt": "2018-03-19T08:16:10.551Z",
-        "updatedAt": "2018-03-19T08:16:10.551Z",
-        "id": "5aaf71ca3ad2ed2160c93639",
-        "userHref": "/users/5aabe03a68f49609145bfcd2"
+        "updatedAt": "2018-03-19T10:01:42.088Z",
+        "links": [
+            {
+                "rel": "self",
+                "href": "/issues/5aaf71ca3ad2ed2160c93639"
+            },
+            {
+                "rel": "user",
+                "href": "/users/5aabe04b68f49609145bfcd3"
+            }
+        ]
     },
     {
         "status": "new",
@@ -139,8 +155,16 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
         },
         "createdAt": "2018-03-19T08:21:50.938Z",
         "updatedAt": "2018-03-19T08:21:50.938Z",
-        "id": "5aaf731e3ad2ed2160c9363a",
-        "userHref": "/users/5aabe04b68f49609145bfcd3"
+        "links": [
+            {
+                "rel": "self",
+                "href": "/issues/5aaf731e3ad2ed2160c9363a"
+            },
+            {
+                "rel": "user",
+                "href": "/users/5aabe04b68f49609145bfcd3"
+            }
+        ]
     }
 ]
 
@@ -187,27 +211,31 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * HTTP/1.1 200 OK
  * Content-Type: application/json
  *
- * {
- *   "status": "new",
- *   "tags": [
- *       "lampadaire",
- *       "éclairage public",
- *       "ampoule cassée"
- *   ],
- *   "createdAt": "2018-03-01T09:05:51.126Z",
- *   "description": "Le lampadaire au croisement de la rue du Lac et de la rue des Casernes ne s'allume pas.",
- *   "imageUrl": "https://www.example.com/image.jpg",
- *   "geolocation": {
- *       "type": "Point",
- *       "coordinates": [
- *           46.780338,
- *           6.637956
- *       ]
- *   },
- *   "id": "5a97c26fdba0205d0c99cdc3",
- *   "userHref": "/users/5a902740d1c0ec3f685e8802"
- * }
- *
+ {
+    "status": "new",
+    "tags": [],
+    "description": "Il y a un type bizarre avec un chien qui squatte devant la vitrine de la boucherie.",
+    "imageUrl": "https://www.example.com/image34.jpg",
+    "geolocation": {
+        "type": "Point",
+        "coordinates": [
+            46.780345,
+            6.637863
+        ]
+    },
+    "createdAt": "2018-03-19T08:21:50.938Z",
+    "updatedAt": "2018-03-19T08:21:50.938Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/issues/5aaf731e3ad2ed2160c9363a"
+        },
+        {
+            "rel": "user",
+            "href": "/users/5aabe04b68f49609145bfcd3"
+        }
+    ]
+}
  *
  * @apiParam (URL path parameters) {String} id Unique identifier of the issue
  *
@@ -260,8 +288,16 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
     },
     "createdAt": "2018-03-19T08:16:10.551Z",
     "updatedAt": "2018-03-19T09:55:12.994Z",
-    "id": "5aaf71ca3ad2ed2160c93639",
-    "userHref": "/users/5aabe03a68f49609145bfcd2"
+    "links": [
+        {
+            "rel": "self",
+            "href": "/issues/5aaf71ca3ad2ed2160c93639"
+        },
+        {
+            "rel": "user",
+            "href": "/users/5aabe03a68f49609145bfcd2"
+        }
+    ]
 }
  *
  *
@@ -395,7 +431,10 @@ function validateStatus(status){
  * @apiSuccess (Response body) {Point} geolocation A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is
  *
  * @apiSuccess (Response body) {String[]} tags User-defined tags to describe the issue. If no tag has been specified, returns an empty array: `"tags": []`.
- * @apiSuccess (Response body) {String} userHref The user href of the user who reported the issue
+ * @apiSuccess (Response body) {Object[]} links An array of two objects with two properties each:
+ * 
+ * * `rel`: relationship between the issue and the linked resource, either `self` or `user`.
+ * * `href`: relative hyperlink reference to the linked resource within the API context
  *
  * @apiSuccess (Response body) {Date} createdAt The date at which the issue was reported
  * @apiSuccess (Response body) {Date} updatedAt The date at which the issue was last modified
