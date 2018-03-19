@@ -10,31 +10,35 @@ const formatLinkHeader = require('format-link-header');
 
 module.exports = {
   findUserById: function(req, res, next) {
-    User.findById(req.params.id).exec(function(err, user) {
-      if (err) {
-        return next(err);
-      } else if (!user) {
-        return next(errors.notFound('No User found with ID ' + req.params.id));
-      }
-      req.user = user;
-      next();
-    });
+    if (ObjectId.isValid(req.params.id)) {
+      User.findById(req.params.id).exec(function(err, user) {
+        if (err) {
+          return next(err);
+        } else if (!user) {
+          return next(errors.notFound('No User found with ID ' + req.params.id));
+        }
+        req.user = user;
+        next();
+      });
+    } else {
+      return next(errors.unprocessableError(req.params.id + ' is not a valid ID.'));
+    }
   },
   findIssueById: function(req, res, next) {
-    if (ObjectId.isValid(req.params.id)){
-    Issue.findById(req.params.id).exec(function(err, issue) {
-      if (err) {
-        return next(err);
-      } else if (!issue) {
-        return next(errors.notFound('No issue found with ID ' + req.params.id));
-      }
-      req.issue = issue;
-      next();
-    });
-  } else{
-    return next(errors.unprocessableError(req.params.id+' is not a valid ID.'));
-  }
-},
+    if (ObjectId.isValid(req.params.id)) {
+      Issue.findById(req.params.id).exec(function(err, issue) {
+        if (err) {
+          return next(err);
+        } else if (!issue) {
+          return next(errors.notFound('No issue found with ID ' + req.params.id));
+        }
+        req.issue = issue;
+        next();
+      });
+    } else {
+      return next(errors.unprocessableError(req.params.id + ' is not a valid ID.'));
+    }
+  },
   queryPaginate: function(resourceHref, query, total, req, res) {
 
     // Parse the "page" param (default to 1 if invalid)
@@ -92,10 +96,10 @@ module.exports = {
     next();
   },
   filterIssueReq: function(req, res, next) {
-    req.bodyFiltered = _.pick(req.body, ['status','description','imageUrl', 'geolocation', 'tags','userId']);
-    if (ObjectId.isValid(req.bodyFiltered.userId)){
+    req.bodyFiltered = _.pick(req.body, ['status', 'description', 'imageUrl', 'geolocation', 'tags', 'userId']);
+    if (ObjectId.isValid(req.bodyFiltered.userId)) {
       next();
-    } else{
+    } else {
       next(errors.unprocessableError(`userId : ${req.bodyFiltered.userId} is not valid.`));
     }
   },
@@ -106,7 +110,7 @@ module.exports = {
   validateStatusChange: function(req, res, next) {
     const actualStatus = req.issue.status;
     let wantedStatus = req.body.status;
-    if (_.isUndefined(wantedStatus)){
+    if (_.isUndefined(wantedStatus)) {
       return next();
     }
     const possibleOptions = {
@@ -118,11 +122,11 @@ module.exports = {
         "canceled",
         "completed"
       ]
-      }
-      if (_.includes(possibleOptions[actualStatus], wantedStatus) || actualStatus === wantedStatus) {
-          return next();
-      } else{
-        return next(errors.unprocessableError("The status change from "+actualStatus+" to "+wantedStatus+" is not allowed."));
+    }
+    if (_.includes(possibleOptions[actualStatus], wantedStatus) || actualStatus === wantedStatus) {
+      return next();
+    } else {
+      return next(errors.unprocessableError("The status change from " + actualStatus + " to " + wantedStatus + " is not allowed."));
     }
   }
 }
