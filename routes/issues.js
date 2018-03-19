@@ -66,7 +66,7 @@ const middlewares = require('../middlewares');
  * @apiUse issueInPostRequestBody
  * @apiUse issueInResponseBody
  * @apiUse issueInPostResponseBody
- * @apiUse issueValidationError
+ * @apiUse issueInPostValidationError
  * 
  */
 router.post('/', middlewares.filterIssueReq, function(req, res, next) {
@@ -92,6 +92,8 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiDescription Retrieves a paginated list of issues ordered by date of creation (in descendant order).
  *
  * @apiUse issueInResponseBody
+ * @apiUse issueInGetOrPatchResponseBody
+ * 
  * @apiExample Example
  *     GET /issues HTTP/1.1
  * @apiExample Example with filter
@@ -205,23 +207,67 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  *
  * @apiParam (URL path parameters) {String} id Unique identifier of the issue
  *
+ * @apiUse issueInGetOrPatchResponseBody
  * @apiUse issueInResponseBody
+ * @apiUse issueInGetOrPatchValidationError
  * 
- * @apiError {Object} 404/NotFound The ID specified is well-formed but no issue was found with this ID.
- *
- * @apiErrorExample {json} 404 Not Found
- * HTTP/1.1 404 Not Found
- * Content-Type: application/json
- * 
-{
-    "message": "No issue found with ID 5aaf71ca3ad2ed2160c93638"
-}
  */
 router.get('/:id', middlewares.findIssueById, function(req, res, next) {
   res.send(req.issue);
 });
 
-/* PATCH user by id */
+
+/**
+ * @api {patch} /issues/:id Update an issue
+ * @apiName PatchIssue
+ * @apiGroup Issue
+ * @apiVersion 1.0.0
+ * @apiDescription Update a single issue.
+ * 
+ * @apiExample Example
+ * PATCH /issues/5aaf71ca3ad2ed2160c93639 HTTP/1.1
+
+{
+    "description": "Il y a deux tags très laids sur le mur du Château",
+    "imageUrl": "https://www.example.com/image23.jpg"
+}
+
+ * @apiSuccessExample 200 OK
+ * HTTP/1.1 200 OK
+ * Content-Type: application/json
+ *
+{
+    "status": "new",
+    "tags": [
+        "tag",
+        "graffiti",
+        "château"
+    ],
+    "description": "Il y a deux tags très laids sur le mur du Château",
+    "imageUrl": "https://www.example.com/image23.jpg",
+    "geolocation": {
+        "type": "Point",
+        "coordinates": [
+            46.780345,
+            6.637863
+        ]
+    },
+    "createdAt": "2018-03-19T08:16:10.551Z",
+    "updatedAt": "2018-03-19T09:55:12.994Z",
+    "id": "5aaf71ca3ad2ed2160c93639",
+    "userHref": "/users/5aabe03a68f49609145bfcd2"
+}
+ *
+ *
+ * @apiParam (URL path parameters) {String} id Unique identifier of the issue
+ *
+ * @apiUse issueInRequestBody
+ * @apiUse issueInUpdateRequestBody
+ * @apiUSe issueInGetOrPatchResponseBody
+ * @apiUse issueInResponseBody
+ * @apiUse issueInGetOrPatchValidationError
+ *
+ */
 router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, middlewares.validateStatusChange, function(req, res, next) {
   let updatedIssue = req.issue;
   updatedIssue.set(req.bodyFiltered);
@@ -311,7 +357,7 @@ function queryIssues(req){
  * @apiSuccess (Response body) {String} [imageUrl] A URL to a picture of the issue
  * @apiSuccess (Response body) {Point} geolocation A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is
  *
- * @apiSuccess (Response body) {String[]} tags User-defined tags to describe the issue
+ * @apiSuccess (Response body) {String[]} tags User-defined tags to describe the issue. If no tag has been specified, returns an empty array: `"tags": []`.
  * @apiSuccess (Response body) {String} userHref The user href of the user who reported the issue
  *
  * @apiSuccess (Response body) {Date} createdAt The date at which the issue was reported
@@ -326,7 +372,7 @@ function queryIssues(req){
 */
 
 /**
- * @apiDefine issueInGetResponseBody
+ * @apiDefine issueInGetOrPatchResponseBody
  * 
  * @apiSuccess (Response body) {String} status The status of the issue:
  *
@@ -338,7 +384,7 @@ function queryIssues(req){
 */
 
 /**
- * @apiDefine issueValidationError
+ * @apiDefine issueInPostValidationError
  *
  * @apiError {Object} 422/UnprocessableEntity Some of the issue's properties are invalid
  *
@@ -349,4 +395,29 @@ function queryIssues(req){
  * {
  *    "message": "Issue validation failed: userId: Path `userId` is required."
  * }
+ */
+
+/**
+ * @apiDefine issueInGetOrPatchValidationError
+ *
+ * @apiError {Object} 404/NotFound The ID specified is well-formed but no issue was found with this ID.
+ *
+ * @apiErrorExample {json} 404 Not Found
+ * HTTP/1.1 404 Not Found
+ * Content-Type: application/json
+ * 
+{
+    "message": "No issue found with ID 5aaf71ca3ad2ed2160c93638"
+}
+ *
+ * @apiError {Object} 422/UnprocessableEntity The specified userId is invalid
+ *
+ * @apiErrorExample {json} 422 Unprocessable Entity
+ * HTTP/1.1 422 Unprocessable Entity
+ * Content-Type: application/json
+ * 
+ * {
+ *    "message": "Issue validation failed: userId: Path `userId` is invalid."
+ * }
+ * 
  */
