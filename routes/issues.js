@@ -57,6 +57,7 @@ const middlewares = require('../middlewares');
  *   ],
  *   "status": "new",
  *   "createdAt": "2018-03-01T09:05:51.126Z",
+ *   "updatedAt": "2018-03-01T09:05:51.126Z",
  *   "id": "5a97c26fdba0205d0c99cdc3",
  *   "userHref": "/users/5a902740d1c0ec3f685e8802"
  * }
@@ -92,10 +93,53 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  *
  * @apiUse issueInResponseBody
  * @apiExample Example
+ *     GET /issues HTTP/1.1
+ * @apiExample Example with filter
  *     GET /issues?user=5a969cf53429176baf1ccc81 HTTP/1.1
  *
  * @apiParam {String} [user] Select only the issues issued by the person with the specified ID (this parameter can be given multiple times)
  *
+ * @apiSuccessExample 200 OK
+[
+    {
+        "status": "new",
+        "tags": [
+            "tag",
+            "graffiti",
+            "château"
+        ],
+        "description": "Il y a un tag sur le mur du Château",
+        "imageUrl": "https://www.example.com/image2.jpg",
+        "geolocation": {
+            "type": "Point",
+            "coordinates": [
+                46.780345,
+                6.637863
+            ]
+        },
+        "createdAt": "2018-03-19T08:16:10.551Z",
+        "updatedAt": "2018-03-19T08:16:10.551Z",
+        "id": "5aaf71ca3ad2ed2160c93639",
+        "userHref": "/users/5aabe03a68f49609145bfcd2"
+    },
+    {
+        "status": "new",
+        "tags": [],
+        "description": "Il y a un type bizarre avec un chien qui squatte devant la vitrine de la boucherie.",
+        "imageUrl": "https://www.example.com/image34.jpg",
+        "geolocation": {
+            "type": "Point",
+            "coordinates": [
+                46.780345,
+                6.637863
+            ]
+        },
+        "createdAt": "2018-03-19T08:21:50.938Z",
+        "updatedAt": "2018-03-19T08:21:50.938Z",
+        "id": "5aaf731e3ad2ed2160c9363a",
+        "userHref": "/users/5aabe04b68f49609145bfcd3"
+    }
+]
  */
   router.get('/', function(req, res, next) {
     const countQuery = queryIssues(req);
@@ -228,7 +272,7 @@ function queryIssues(req){
  * 
  * `{ type: "Point", coordinates: [ 40, 5 ] }`
  *
- * @apiParam (Request body) {String[]} tags User-defined tags to describe the issue (e.g. "accident", "broken")
+ * @apiParam (Request body) {String[]} [tags] User-defined tags to describe the issue (e.g. "accident", "broken")
  * @apiParam (Request body) {String} userId A string corresponding to an existing user's [12-byte hexadecimal string ObjectId value](https://docs.mongodb.com/manual/reference/method/ObjectId/), e.g. : `507f191e810c19729de860ea`
  * 
 */
@@ -261,7 +305,7 @@ function queryIssues(req){
  * @apiSuccess (Response body) {String} userHref The user href of the user who reported the issue
  *
  * @apiSuccess (Response body) {Date} createdAt The date at which the issue was reported
- * @apiSuccess (Response body) {Date} [updatedAt] The date at which the issue was last modified
+ * @apiSuccess (Response body) {Date} updatedAt The date at which the issue was last modified
 */
 
 /**
