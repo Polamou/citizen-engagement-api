@@ -85,7 +85,7 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
 
 
 /**
- * @api {get} /issues Request the list of issues
+ * @api {get} /issues Retrieve a list of issues
  * @apiName GetIssues
  * @apiGroup Issue
  * @apiVersion 1.0.0
@@ -100,6 +100,7 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  *     GET /issues?user=5a969cf53429176baf1ccc81 HTTP/1.1
  *
  * @apiParam {String} [user] Select only the issues issued by the person with the specified ID (this parameter can be given multiple times)
+ * @apiParam {String} [status] Select only the issues with the specified status (this parameter can be given multiple times)
  *
  * @apiSuccessExample 200 OK
 [
@@ -288,7 +289,6 @@ router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, midd
   });
 
 });
-
 
 /**
  * @api {delete} /issues/:id Delete an issue
