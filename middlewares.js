@@ -33,7 +33,7 @@ module.exports = {
     });
   } else{
     return next(errors.unprocessableError(req.params.id+' is not a valid ID.'));
-  }  
+  }
 },
   queryPaginate: function(resourceHref, query, total, req, res) {
 
@@ -93,7 +93,11 @@ module.exports = {
   },
   filterIssueReq: function(req, res, next) {
     req.bodyFiltered = _.pick(req.body, ['status','description','imageUrl', 'geolocation', 'tags','userId']);
-    next();
+    if (ObjectId.isValid(req.bodyFiltered.userId)){
+      next();
+    } else{
+      next(errors.unprocessableError(`userId : ${req.bodyFiltered.userId} is not valid.`));
+    }
   },
   /*
    * This function validate the status change of an issue
