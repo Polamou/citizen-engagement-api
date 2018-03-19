@@ -39,9 +39,14 @@ const middlewares = require('../middlewares');
     "firstName": "Marie-Jeanne",
     "lastName": "Rochat",
     "role": "citizen",
-    "createdAt": "2018-03-19T11:46:21.427Z",
-    "updatedAt": "2018-03-19T11:46:21.427Z",
-    "id": "5aafa30d3ad2ed2160c9363c"
+    "createdAt": "2018-03-19T15:30:37.133Z",
+    "updatedAt": "2018-03-19T15:30:37.133Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/users/5aafd79d3c5f2f1f18e41593"
+        }
+    ]
 }
  *
  */
