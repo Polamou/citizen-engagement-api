@@ -129,19 +129,27 @@ router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
 *
 */
 function queryIssues(req){
-  let query = Issue.find()
-
+  let query = Issue.find();
+  
   if(Array.isArray(req.query.user)){
     const users = req.query.user.filter(ObjectId.isValid);
     query = query.where('userId').in(users);
   } else if (ObjectId.isValid(req.query.user)){
     query = query.where('userId').equals(req.query.user);
   }
-  if (req.query.status){
+
+  if(Array.isArray(req.query.status)){
+    const statuses = req.query.status.filter(validateStatus);
+    query = query.where('status').in(statuses);
+  } else if (validateStatus(req.query.status)){
     query = query.where('status').equals(req.query.status);
   }
-    return query;
+  return query;
+}
 
+function validateStatus(status){
+  const availableStatus = ['new', 'inProgress','canceled','completed'];
+  return availableStatus.includes(status);
 }
 
 /**
