@@ -15,7 +15,10 @@ userSchema.index({ firstName: 1, lastName: 1  }, { unique: true });
 
 userSchema.methods.toJSON = function(){
   let obj = this.toObject();
-  obj.id = obj._id;
+  obj.links = [{
+    "rel" :"self",
+    "href":"/users/"+obj._id
+    }];
   delete obj._id;
   delete obj.__v;
   return obj;

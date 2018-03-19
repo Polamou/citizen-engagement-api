@@ -52,8 +52,16 @@ router.get('/', function(req, res, next) {
       const usersJson = users.map(user => user.toJSON());
 
       results.forEach(function(result){
-        const user = usersJson.find(user => user.id == result._id.toString());
+        const user = usersJson.find(user => user.links[0].href == "/users/"+result._id.toString());
         user.issuesCount = result.issuesCount;
+        if (user.issuesCount > 0){
+          user.links.push(
+            {
+            "rel" : "issues",
+            "href" : "/issues/?user="+result._id.toString()
+          }
+        );
+        }
       });
 
       res.send(usersJson);
