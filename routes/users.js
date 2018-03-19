@@ -50,20 +50,7 @@ router.get('/', function(req, res, next) {
       if (err) {
         return next(err);
       }
-      const usersJson = users.map(user => user.toJSON());
-
-      results.forEach(function(result) {
-        const user = usersJson.find(user => user.links[0].href == "/users/" + result._id.toString());
-        user.issuesCount = result.issuesCount;
-        if (user.issuesCount > 0) {
-          user.links.push({
-            "rel": "issues",
-            "href": "/issues/?user=" + result._id.toString()
-          });
-        }
-      });
-
-      res.send(usersJson);
+      res.send(serializeUsers(users,results));
     });
   })
 
@@ -83,17 +70,7 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
     if (err) {
       return next(err);
     }
-
-    let jsonUser = req.user.toJSON();
-    let issuesCount = results[0].issuesCount;
-    if (issuesCount > 0) {
-      jsonUser.issuesCount = issuesCount;
-      jsonUser.links.push({
-        "rel": "issues",
-        "href": "/issues/?user=" + results[0]._id.toString()
-      });
-    }
-    res.send(jsonUser);
+    res.send(serializeUsers([req.user],results));
   });
 });
 
@@ -162,6 +139,24 @@ function countIssuesByUser(users, callback) {
       }
     }
   ], callback);
+}
+
+
+
+function serializeUsers(users, issueCountAggregation){
+  const usersJson = users.map(user => user.toJSON());
+
+  issueCountAggregation.forEach(function(aggregationResult){
+    const user = usersJson.find(user => user.links[0].href === '/users/'+aggregationResult._id.toString());
+    user.issuesCount = aggregationResult.issuesCount;
+    user.links.push({
+      "rel": "issues",
+      "href": "/issues/?user=" + aggregationResult._id.toString()
+    });
+  });
+
+  return usersJson;
+
 }
 
 /**
