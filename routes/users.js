@@ -84,7 +84,16 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
       return next(err);
     }
 
-    res.send(req.user);
+    let jsonUser = req.user.toJSON();
+    let issuesCount = results[0].issuesCount;
+    if (issuesCount > 0) {
+      jsonUser.issuesCount = issuesCount;
+      jsonUser.links.push({
+        "rel": "issues",
+        "href": "/issues/?user=" + results[0]._id.toString()
+      });
+    }
+    res.send(jsonUser);
   });
 });
 
