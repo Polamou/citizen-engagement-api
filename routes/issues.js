@@ -98,19 +98,28 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a paginated list of issues ordered by date of creation (in descendant order).
- *
- * @apiUse issueInResponseBody
- * @apiUse issueInGetOrPatchResponseBody
  * 
  * @apiExample Example
  *     GET /issues HTTP/1.1
- * @apiExample Example with filter
+ * @apiExample Example with query parameter (filter by user)
  *     GET /issues?user=5a969cf53429176baf1ccc81 HTTP/1.1
+ * @apiExample Example with query parameters (pagination)
+ *     GET /issues?page=1&pageSize=10 HTTP/1.1
  *
- * @apiParam {String} [user] Select only the issues issued by the person with the specified ID (this parameter can be given multiple times)
- * @apiParam {String} [status] Select only the issues with the specified status (this parameter can be given multiple times)
- *
+ * @apiParam (URL query parameters) {String} [user] Select only the issues issued by the person with the specified ID (this parameter can be given multiple times)
+ * @apiParam (URL query parameters) {String} [status] Select only the issues with the specified status (this parameter can be given multiple times)
+ * @apiParam (URL query parameters) {number} [page] The page to retrieve (defaults to 1)<br />Size range: `1..`
+ * @apiParam (URL query parameters) {number} [pageSize] The number of elements to retrieve in one page (defaults to 100)<br />Size range: `1..100`
+ * @apiUse issueInResponseBody
+ * @apiUse issueInGetOrPatchResponseBody
+ * 
+ * @apiSuccess (Response headers) {String} link Links to the first, previous, next and last pages of the collection (if applicable), formatted as per [RFC 5988](https://tools.ietf.org/html/rfc5988). 
+ * 
  * @apiSuccessExample 200 OK
+HTTP/1.1 200 OK
+Content-Type: application/json
+Link <https://polamou-citizen-engagement-api.herokuapp.com/issues?page=2&pageSize=2>; rel="next", <https://polamou-citizen-engagement-api.herokuapp.com/issues?page=12&pageSize=2>; rel="last"
+
 [
     {
         "status": "inProgress",
@@ -237,7 +246,7 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
     ]
 }
  *
- * @apiParam (URL path parameters) {String} id Unique identifier of the issue
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the issue
  *
  * @apiUse issueInResponseBody
  * @apiUse issueInGetOrPatchResponseBody
@@ -301,9 +310,8 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
 }
  *
  *
- * @apiParam (URL path parameters) {String} id Unique identifier of the issue
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the issue
  *
- * @apiUse issueInRequestBody
  * @apiUse issueInUpdateRequestBody
  * 
  * @apiUse issueInResponseBody
@@ -340,7 +348,7 @@ router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, midd
  * HTTP/1.1 204 No content
  * Content-Type: application/json
  *
- * @apiParam (URL path parameters) {String} id Unique identifier of the issue
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the issue, e.g. : `507f191e810c19729de860ea`
  *
  * @apiUse issue_404_issueId_ValidationError
  * @apiUse issue_422_issueId_ValidationError
@@ -402,7 +410,7 @@ function validateStatus(status){
  * `{ type: "Point", coordinates: [ 40, 5 ] }`
  *
  * @apiParam (Request body) {String[]} [tags] User-defined tags to describe the issue (e.g. "accident", "broken")
- * @apiParam (Request body) {String} userId A string corresponding to an existing user's [12-byte hexadecimal string ObjectId value](https://docs.mongodb.com/manual/reference/method/ObjectId/), e.g. : `507f191e810c19729de860ea`
+ * @apiParam (Request body) {String} userId Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of an existing user, e.g. : `507f191e810c19729de860ea`
  * 
 */
 
@@ -414,6 +422,15 @@ function validateStatus(status){
 
 /**
  * @apiDefine issueInUpdateRequestBody
+ *
+ * @apiParam (Request body) {String{0..1000}} [description] A detailed description of the issue
+ * @apiParam (Request body) {String{0..500}} [imageUrl] A URL to a picture of the issue
+ * @apiParam (Request body) {Point} [geolocation] A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is, e.g. :
+ * 
+ * `{ type: "Point", coordinates: [ 40, 5 ] }`
+ *
+ * @apiParam (Request body) {String[]} [tags] User-defined tags to describe the issue (e.g. "accident", "broken")
+ * @apiParam (Request body) {String} userId Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of an existing user, e.g. : `507f191e810c19729de860ea`
  * 
  * @apiParam (Request body) {String="new","inProgress","canceled","completed"} [status] The status of the issue:
  *
@@ -476,7 +493,7 @@ function validateStatus(status){
 /**
  * @apiDefine issue_404_issueId_ValidationError
  *
- * @apiError {Object} 404/NotFound The ID specified is well-formed but no issue was found with this ID.
+ * @apiError {Object} 404/NotFound The id specified is well-formed but no issue was found with this id.
  *
  * @apiErrorExample {json} 404 Not Found
  * HTTP/1.1 404 Not Found
