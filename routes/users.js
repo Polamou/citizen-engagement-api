@@ -24,12 +24,7 @@ const middlewares = require('../middlewares');
 	"role": "citizen"
 }
  *
- * @apiSuccess (201 Created) {String} role Role of the user
- * @apiSuccess (201 Created) {String} firstName  First name of the user
- * @apiSuccess (201 Created) {String} lastName  Last name of the user
- * @apiSuccess (201 Created) {String} createdAt  The date at which the user was created
- * @apiSuccess (201 Created) {String} updatedAt  The date at which the user was last updated
- * @apiSuccess (201 Created) {String} id  Unique identifier of the user
+ * @apiUse userInSuccessResponse
  *  
  * @apiSuccessExample 201 Created
  * HTTP/1.1 201 Created
@@ -71,6 +66,47 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a list of users ordered by date of creation (in descendant order).
  *
+ * @apiExample Example
+ * GET /users HTTP/1.1
+
+ * @apiSuccessExample 200 OK
+ * HTTP/1.1 200 OK
+ * Content-Type: application/json
+ * 
+[
+    {
+        "role": "citizen",
+        "firstName": "Bob",
+        "lastName": "Lesponge",
+        "createdAt": "2018-03-16T15:18:35.754Z",
+        "updatedAt": "2018-03-16T15:18:35.754Z",
+        "links": [
+            {
+                "rel": "self",
+                "href": "/users/5aabe04b68f49609145bfcd3"
+            },
+            {
+                "rel": "issues",
+                "href": "/issues/?user=5aabe04b68f49609145bfcd3"
+            }
+        ],
+        "issuesCount": 2
+    },
+    {
+        "role": "citizen",
+        "firstName": "Marie-Jeanne",
+        "lastName": "Rochat",
+        "createdAt": "2018-03-19T15:30:37.133Z",
+        "updatedAt": "2018-03-19T15:30:37.133Z",
+        "links": [
+            {
+                "rel": "self",
+                "href": "/users/5aafd79d3c5f2f1f18e41593"
+            }
+        ]
+    }
+]
+ * 
  * @apiUse userInSuccessResponse
  */
 router.get('/', function(req, res, next) {
@@ -207,11 +243,15 @@ function countIssuesByUser(users, callback) {
 
 /**
  * @apiDefine userInSuccessResponse
- * @apiSuccess {String} role Role of the user
- * @apiSuccess {String} firstName  First name of the user
- * @apiSuccess {String} lastName  Last name of the user
- * @apiSuccess {String} id  Unique identifier of the user
- * @apiSuccess {Number} [issuesCount] Number of issues associated with this user
+ * @apiSuccess (Response body)  {String} role User's role (`"manager"` or `"citizen"`).
+ * @apiSuccess (Response body)  {String} firstName  User's first name
+ * @apiSuccess (Response body)  {String} lastName  User's last name
+ * @apiSuccess (Response body)  {Number} [issuesCount] Number of issues associated with this user
+ * @apiSuccess (Response body)  {Object[]} links An array of one or two objects with two properties each:
+ * 
+ * * `rel`: relationship between the user and the linked resource, either `self` or `issues`.
+ * * `href`: relative hyperlink reference to the linked resource within the API context
+ *
  */
 
 /**
@@ -221,7 +261,7 @@ function countIssuesByUser(users, callback) {
 
 /**
  * @apiDefine userParams
- * @apiParam {String{2..20}} firstName First name of the user
- * @apiParam {String{2..20}} lastName Last name of the user
- * @apiParam {String="manager","citizen"} role Role of the user
+ * @apiParam {String{2..20}} firstName User's first name
+ * @apiParam {String{2..20}} lastName User's last name
+ * @apiParam {String="manager","citizen"} [role] User's role. If not specified, defaults to `"citizen"` when the user is created.
  */
