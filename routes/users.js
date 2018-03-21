@@ -73,7 +73,7 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
  * @apiName GetUsers
  * @apiGroup User
  * @apiVersion 1.0.0
- * @apiDescription Retrieves a list of users ordered by date of creation (in descendant order).
+ * @apiDescription Retrieves a list of users ordered by lastName (in ascendant order).
  *
  * @apiExample Example
  * GET /users HTTP/1.1
