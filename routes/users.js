@@ -112,7 +112,7 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
 router.get('/', function(req, res, next) {
   const queryUsers = User.find();
 
-  queryUsers.sort('name').exec(function(err, users) {
+  queryUsers.sort('lastName').exec(function(err, users) {
     if (err) {
       return next(err);
     }
