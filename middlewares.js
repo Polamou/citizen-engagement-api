@@ -56,7 +56,14 @@ module.exports = {
 
     // URL
     const links = {};
-    const url = "https://polamou-citizen-engagement-api.herokuapp.com/" + resourceHref;
+    let url = () => {
+      if (typeof process.env.APP_URL !== 'undefined'){
+        return process.env.APP_URL
+      } else {
+        return 'http://localhost:3000/'
+      }
+    }
+    console.log(url());
     const maxPage = Math.ceil(total / pageSize);
 
     // Add first & prev links if current page is not the first one
@@ -75,11 +82,11 @@ module.exports = {
     if (page < maxPage) {
       links.next = {
         rel: 'next',
-        url: `${url}?page=${page + 1}&pageSize=${pageSize}`
+        url: `${url()}?page=${page + 1}&pageSize=${pageSize}`
       };
       links.last = {
         rel: 'last',
-        url: `${url}?page=${maxPage}&pageSize=${pageSize}`
+        url: `${url()}?page=${maxPage}&pageSize=${pageSize}`
       };
     }
 
