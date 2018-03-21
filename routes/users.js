@@ -143,8 +143,44 @@ router.get('/', function(req, res, next) {
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a single user.
  *
+ * @apiExample Example
+ * GET /users/58b2926f5e1def0123e97281 HTTP/1.1
+ * 
  * @apiUse userId
  *
+ * @apiSuccessExample 200 OK
+ * HTTP/1.1 200 OK
+ * Content-Type: application/json
+ *
+ {
+    "status": "new",
+    "tags": [],
+    "description": "Il y a un type bizarre avec un chien qui squatte devant la vitrine de la boucherie.",
+    "imageUrl": "https://www.example.com/image34.jpg",
+    "geolocation": {
+        "type": "Point",
+        "coordinates": [
+            46.780345,
+            6.637863
+        ]
+    },
+    "createdAt": "2018-03-19T08:21:50.938Z",
+    "updatedAt": "2018-03-19T08:21:50.938Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/issues/5aaf731e3ad2ed2160c9363a"
+        },
+        {
+            "rel": "user",
+            "href": "/users/5aabe04b68f49609145bfcd3"
+        }
+    ]
+}
+ *
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user
+ *
+ * 
  * @apiUse userInSuccessResponse
  */
 router.get('/:id', middlewares.findUserById, function(req, res, next) {
