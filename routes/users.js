@@ -13,11 +13,11 @@ const middlewares = require('../middlewares');
  * @apiDescription Registers a new issue.
  *
  * @apiUse userParams
- * 
+ *
  * @apiExample Example
  * POST /users HTTP/1.1
  * Content-Type: application/json
- * 
+ *
 {
 	"firstName": "Marie-Jeanne",
 	"lastName": "Rochat",
@@ -25,7 +25,7 @@ const middlewares = require('../middlewares');
 }
  *
  * @apiUse userInSuccessResponse
- *  
+ *
  * @apiSuccessExample 201 Created
  * HTTP/1.1 201 Created
  * Content-Type: application/json
@@ -72,7 +72,7 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
  * @apiSuccessExample 200 OK
  * HTTP/1.1 200 OK
  * Content-Type: application/json
- * 
+ *
 [
     {
         "role": "citizen",
@@ -106,7 +106,7 @@ router.post('/', middlewares.filterUserReq, function(req, res, next) {
         ]
     }
 ]
- * 
+ *
  * @apiUse userInSuccessResponse
  */
 router.get('/', function(req, res, next) {
@@ -231,9 +231,10 @@ function serializeUsers(users, issueCountAggregation){
       "href": "/issues/?user=" + aggregationResult._id.toString()
     });
   });
-
-  return usersJson;
-
+  if (usersJson.length === 1){
+      return usersJson[usersJson.length - 1];
+  }
+    return usersJson;
 }
 
 /**
@@ -243,7 +244,7 @@ function serializeUsers(users, issueCountAggregation){
  * @apiSuccess (Response body)  {String} lastName  User's last name
  * @apiSuccess (Response body)  {Number} [issuesCount] Number of issues associated with this user
  * @apiSuccess (Response body)  {Object[]} links An array of one or two objects with two properties each:
- * 
+ *
  * * `rel`: relationship between the user and the linked resource, either `self` or `issues`.
  * * `href`: relative hyperlink reference to the linked resource within the API context
  *
