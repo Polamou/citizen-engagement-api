@@ -192,8 +192,38 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  * @apiVersion 1.0.0
  * @apiDescription Update a single user.
  *
- * @apiUse userParams
+ * @apiExample Example
+ * PATCH /users/5aabe03a68f49609145bfcd2 HTTP/1.1
+
+{
+	"lastName": "Dupont-Delamotte"
+}
+ * 
+ * @apiUse userParamsInPatch
  * @apiUse userInSuccessResponse
+ * 
+ * @apiSuccessExample 200 OK
+ * HTTP/1.1 200 OK
+ * Content-Type: application/json
+ * 
+{
+    "role": "manager",
+    "firstName": "Paul-Henri",
+    "lastName": "Dupont-Delamotte",
+    "createdAt": "2018-03-16T15:18:18.885Z",
+    "updatedAt": "2018-03-21T13:17:28.467Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/users/5aabe03a68f49609145bfcd2"
+        }
+    ]
+}
+ *
+ * 
+ * @apiUse issue_404_userId_ValidationError
+ * @apiUse issue_422_userId_ValidationError
+ * 
  */
 router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, function(req, res, next) {
   let userToPatch = req.user;
@@ -302,6 +332,14 @@ function serializeUsers(users, issueCountAggregation){
  * @apiParam {String{2..20}} lastName User's last name
  * @apiParam {String="manager","citizen"} [role] User's role. If not specified, defaults to `"citizen"` when the user is created.
  */
+
+ /**
+ * @apiDefine userParamsInPatch
+ * @apiParam {String{2..20}} [firstName] User's first name
+ * @apiParam {String{2..20}} [lastName] User's last name
+ * @apiParam {String="manager","citizen"} [role] User's role. If not specified, defaults to `"citizen"` when the user is created.
+ */
+
 
  /**
  * @apiDefine issue_404_userId_ValidationError
