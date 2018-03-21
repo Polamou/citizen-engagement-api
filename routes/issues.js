@@ -97,7 +97,7 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiName GetIssues
  * @apiGroup Issue
  * @apiVersion 1.0.0
- * @apiDescription Retrieves a paginated list of issues ordered by date of creation (in descendant order).
+ * @apiDescription Retrieves a paginated list of issues ordered by date of creation (in descending order).
  * 
  * @apiExample Example
  *     GET /issues HTTP/1.1
