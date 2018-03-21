@@ -357,7 +357,7 @@
       "examples": [
         {
           "title": "422 Unprocessable Entity",
-          "content": "HTTP/1.1 422 Unprocessable Entity\nContent-Type: application/json\n\n{\n   \"message\": \"Issue validation failed: userId: Path `userId` is invalid.\"\n}",
+          "content": "HTTP/1.1 422 Unprocessable Entity\nContent-Type: application/json\n\n{\n   \"message\": \"User validation failed: userId: Path `userId` is invalid.\"\n}",
           "type": "json"
         }
       ]
@@ -715,30 +715,37 @@
     "group": "User",
     "version": "1.0.0",
     "description": "<p>Delete a single user.</p>",
+    "examples": [
+      {
+        "title": "Example",
+        "content": "DELETE /users/5aaf71ca3ad2ed2160c93639 HTTP/1.1",
+        "type": "json"
+      }
+    ],
     "success": {
       "examples": [
         {
           "title": "Success Response",
-          "content": "HTTP/1.1 204 No Content",
+          "content": "HTTP/1.1 204 No content\nContent-Type: application/json",
           "type": "json"
         }
       ]
     },
-    "filename": "routes/users.js",
-    "groupTitle": "User",
     "parameter": {
       "fields": {
-        "Parameter": [
+        "URL path parameters": [
           {
-            "group": "Parameter",
+            "group": "URL path parameters",
             "type": "String",
             "optional": false,
             "field": "id",
-            "description": "<p>Unique identifier of the user</p>"
+            "description": "<p>Unique identifier (<a href=\"https://docs.mongodb.com/manual/reference/method/ObjectId/\">12-byte hexadecimal string</a>) of the user, e.g. : <code>507f191e810c19729de860ea</code></p>"
           }
         ]
       }
-    }
+    },
+    "filename": "routes/users.js",
+    "groupTitle": "User"
   },
   {
     "type": "get",
@@ -748,22 +755,34 @@
     "group": "User",
     "version": "1.0.0",
     "description": "<p>Retrieves a single user.</p>",
-    "filename": "routes/users.js",
-    "groupTitle": "User",
+    "examples": [
+      {
+        "title": "Example",
+        "content": "GET /users/5aabe04b68f49609145bfcd3 HTTP/1.1",
+        "type": "json"
+      }
+    ],
     "parameter": {
       "fields": {
-        "Parameter": [
+        "URL path parameters": [
           {
-            "group": "Parameter",
+            "group": "URL path parameters",
             "type": "String",
             "optional": false,
             "field": "id",
-            "description": "<p>Unique identifier of the user</p>"
+            "description": "<p>Unique identifier (<a href=\"https://docs.mongodb.com/manual/reference/method/ObjectId/\">12-byte hexadecimal string</a>) of the user</p>"
           }
         ]
       }
     },
     "success": {
+      "examples": [
+        {
+          "title": "200 OK",
+          "content": "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n    \"role\": \"citizen\",\n    \"firstName\": \"Bob\",\n    \"lastName\": \"Lesponge\",\n    \"createdAt\": \"2018-03-16T15:18:35.754Z\",\n    \"updatedAt\": \"2018-03-16T15:18:35.754Z\",\n    \"links\": [\n        {\n            \"rel\": \"self\",\n            \"href\": \"/users/5aabe04b68f49609145bfcd3\"\n        },\n        {\n            \"rel\": \"issues\",\n            \"href\": \"/issues/?user=5aabe04b68f49609145bfcd3\"\n        }\n    ],\n    \"issuesCount\": 2\n}",
+          "type": "json"
+        }
+      ],
       "fields": {
         "Response body": [
           {
@@ -803,6 +822,40 @@
           }
         ]
       }
+    },
+    "filename": "routes/users.js",
+    "groupTitle": "User",
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "404/NotFound",
+            "description": "<p>The id specified is well-formed but no user was found with this id.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "422/UnprocessableEntity",
+            "description": "<p>The specified userId is invalid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\nContent-Type: application/json\n\n{\n    \"message\": \"No user found with ID 5aaf71ca3ad2ed2160c93638\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "422 Unprocessable Entity",
+          "content": "HTTP/1.1 422 Unprocessable Entity\nContent-Type: application/json\n\n{\n   \"message\": \"User validation failed: userId: Path `userId` is invalid.\"\n}",
+          "type": "json"
+        }
+      ]
     }
   },
   {
@@ -879,42 +932,21 @@
     "group": "User",
     "version": "1.0.0",
     "description": "<p>Update a single user.</p>",
-    "filename": "routes/users.js",
-    "groupTitle": "User",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "size": "2..20",
-            "optional": false,
-            "field": "firstName",
-            "description": "<p>User's first name</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "size": "2..20",
-            "optional": false,
-            "field": "lastName",
-            "description": "<p>User's last name</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "allowedValues": [
-              "\"manager\"",
-              "\"citizen\""
-            ],
-            "optional": true,
-            "field": "role",
-            "description": "<p>User's role. If not specified, defaults to <code>&quot;citizen&quot;</code> when the user is created.</p>"
-          }
-        ]
+    "examples": [
+      {
+        "title": "Example",
+        "content": "PATCH /users/5aabe03a68f49609145bfcd2 HTTP/1.1\n\n{\n\t\"lastName\": \"Dupont-Delamotte\"\n}",
+        "type": "json"
       }
-    },
+    ],
     "success": {
+      "examples": [
+        {
+          "title": "200 OK",
+          "content": "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n    \"role\": \"manager\",\n    \"firstName\": \"Paul-Henri\",\n    \"lastName\": \"Dupont-Delamotte\",\n    \"createdAt\": \"2018-03-16T15:18:18.885Z\",\n    \"updatedAt\": \"2018-03-21T13:17:28.467Z\",\n    \"links\": [\n        {\n            \"rel\": \"self\",\n            \"href\": \"/users/5aabe03a68f49609145bfcd2\"\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ],
       "fields": {
         "Response body": [
           {
@@ -954,6 +986,73 @@
           }
         ]
       }
+    },
+    "filename": "routes/users.js",
+    "groupTitle": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "2..20",
+            "optional": true,
+            "field": "firstName",
+            "description": "<p>User's first name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "2..20",
+            "optional": true,
+            "field": "lastName",
+            "description": "<p>User's last name</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "\"manager\"",
+              "\"citizen\""
+            ],
+            "optional": true,
+            "field": "role",
+            "description": "<p>User's role. If not specified, defaults to <code>&quot;citizen&quot;</code> when the user is created.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "404/NotFound",
+            "description": "<p>The id specified is well-formed but no user was found with this id.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "422/UnprocessableEntity",
+            "description": "<p>The specified userId is invalid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\nContent-Type: application/json\n\n{\n    \"message\": \"No user found with ID 5aaf71ca3ad2ed2160c93638\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "422 Unprocessable Entity",
+          "content": "HTTP/1.1 422 Unprocessable Entity\nContent-Type: application/json\n\n{\n   \"message\": \"User validation failed: userId: Path `userId` is invalid.\"\n}",
+          "type": "json"
+        }
+      ]
     }
   },
   {
@@ -1018,6 +1117,26 @@
           }
         ]
       }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "422/UnprocessableEntity",
+            "description": "<p>Some of the user's properties are invalid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "422 Unprocessable Entity",
+          "content": "HTTP/1.1 422 Unprocessable Entity\nContent-Type: application/json\n\n{\n    \"message\": \"User validation failed: lastName: Path `lastName` is required.\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "filename": "routes/users.js",
     "groupTitle": "User",
