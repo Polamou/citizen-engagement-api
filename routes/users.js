@@ -44,6 +44,15 @@ const middlewares = require('../middlewares');
     ]
 }
  *
+ * @apiError {Object} 422/UnprocessableEntity Some of the user's properties are invalid
+ *
+ * @apiErrorExample {json} 422 Unprocessable Entity
+HTTP/1.1 422 Unprocessable Entity
+Content-Type: application/json
+
+{
+    "message": "User validation failed: lastName: Path `lastName` is required."
+}
  */
 router.post('/', middlewares.filterUserReq, function(req, res, next) {
   // Create a new document from the JSON in the request body
@@ -175,10 +184,14 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  * @apiVersion 1.0.0
  * @apiDescription Delete a single user.
  *
- * @apiUse userId
+ * @apiExample Example
+ * DELETE /users/5aaf71ca3ad2ed2160c93639 HTTP/1.1
+ * 
+ * @apiSuccessExample Success Response
+ * HTTP/1.1 204 No content
+ * Content-Type: application/json
  *
- * @apiSuccessExample {json} Success Response
- *    HTTP/1.1 204 No Content
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user, e.g. : `507f191e810c19729de860ea`
  */
 router.delete('/:id', function(req, res, next) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
