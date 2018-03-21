@@ -70,11 +70,11 @@ module.exports = {
     if (page > 1) {
       links.first = {
         rel: 'first',
-        url: `${url}?page=1&pageSize=${pageSize}`
+        url: `${url()}?page=1&pageSize=${pageSize}`
       };
       links.prev = {
         rel: 'prev',
-        url: `${url}?page=${page - 1}&pageSize=${pageSize}`
+        url: `${url()}?page=${page - 1}&pageSize=${pageSize}`
       };
     }
 
@@ -104,11 +104,14 @@ module.exports = {
   },
   filterIssueReq: function(req, res, next) {
     req.bodyFiltered = _.pick(req.body, ['status', 'description', 'imageUrl', 'geolocation', 'tags', 'userId']);
+    if (!_.isUndefined(req.bodyFiltered.userId)){
     if (ObjectId.isValid(req.bodyFiltered.userId)) {
       next();
     } else {
       next(errors.unprocessableError(`userId : ${req.bodyFiltered.userId} is not valid.`));
     }
+  }
+    next();
   },
   /*
    * This function validate the status change of an issue
