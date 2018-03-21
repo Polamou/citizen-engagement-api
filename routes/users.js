@@ -144,44 +144,37 @@ router.get('/', function(req, res, next) {
  * @apiDescription Retrieves a single user.
  *
  * @apiExample Example
- * GET /users/58b2926f5e1def0123e97281 HTTP/1.1
- * 
- * @apiUse userId
+ * GET /users/5aabe04b68f49609145bfcd3 HTTP/1.1
  *
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user
+ * 
  * @apiSuccessExample 200 OK
  * HTTP/1.1 200 OK
  * Content-Type: application/json
  *
- {
-    "status": "new",
-    "tags": [],
-    "description": "Il y a un type bizarre avec un chien qui squatte devant la vitrine de la boucherie.",
-    "imageUrl": "https://www.example.com/image34.jpg",
-    "geolocation": {
-        "type": "Point",
-        "coordinates": [
-            46.780345,
-            6.637863
-        ]
-    },
-    "createdAt": "2018-03-19T08:21:50.938Z",
-    "updatedAt": "2018-03-19T08:21:50.938Z",
+{
+    "role": "citizen",
+    "firstName": "Bob",
+    "lastName": "Lesponge",
+    "createdAt": "2018-03-16T15:18:35.754Z",
+    "updatedAt": "2018-03-16T15:18:35.754Z",
     "links": [
         {
             "rel": "self",
-            "href": "/issues/5aaf731e3ad2ed2160c9363a"
+            "href": "/users/5aabe04b68f49609145bfcd3"
         },
         {
-            "rel": "user",
-            "href": "/users/5aabe04b68f49609145bfcd3"
+            "rel": "issues",
+            "href": "/issues/?user=5aabe04b68f49609145bfcd3"
         }
-    ]
+    ],
+    "issuesCount": 2
 }
- *
- * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user
- *
  * 
  * @apiUse userInSuccessResponse
+ * 
+ * @apiUse issue_404_userId_ValidationError
+ * @apiUse issue_422_userId_ValidationError
  */
 router.get('/:id', middlewares.findUserById, function(req, res, next) {
   countIssuesByUser([req.user], function(err, results) {
@@ -308,4 +301,33 @@ function serializeUsers(users, issueCountAggregation){
  * @apiParam {String{2..20}} firstName User's first name
  * @apiParam {String{2..20}} lastName User's last name
  * @apiParam {String="manager","citizen"} [role] User's role. If not specified, defaults to `"citizen"` when the user is created.
+ */
+
+ /**
+ * @apiDefine issue_404_userId_ValidationError
+ *
+ * @apiError {Object} 404/NotFound The id specified is well-formed but no user was found with this id.
+ *
+ * @apiErrorExample {json} 404 Not Found
+ * HTTP/1.1 404 Not Found
+ * Content-Type: application/json
+ * 
+{
+    "message": "No user found with ID 5aaf71ca3ad2ed2160c93638"
+}
+ */
+
+/**
+ * @apiDefine issue_422_userId_ValidationError
+ *
+ * @apiError {Object} 422/UnprocessableEntity The specified userId is invalid
+ *
+ * @apiErrorExample {json} 422 Unprocessable Entity
+ * HTTP/1.1 422 Unprocessable Entity
+ * Content-Type: application/json
+ * 
+ * {
+ *    "message": "User validation failed: userId: Path `userId` is invalid."
+ * }
+ * 
  */
