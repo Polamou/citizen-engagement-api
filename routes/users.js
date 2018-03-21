@@ -44,6 +44,15 @@ const middlewares = require('../middlewares');
     ]
 }
  *
+ * @apiError {Object} 422/UnprocessableEntity Some of the user's properties are invalid
+ *
+ * @apiErrorExample {json} 422 Unprocessable Entity
+HTTP/1.1 422 Unprocessable Entity
+Content-Type: application/json
+
+{
+    "message": "User validation failed: lastName: Path `lastName` is required."
+}
  */
 router.post('/', middlewares.filterUserReq, function(req, res, next) {
   // Create a new document from the JSON in the request body
@@ -134,9 +143,38 @@ router.get('/', function(req, res, next) {
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a single user.
  *
- * @apiUse userId
+ * @apiExample Example
+ * GET /users/5aabe04b68f49609145bfcd3 HTTP/1.1
  *
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user
+ * 
+ * @apiSuccessExample 200 OK
+ * HTTP/1.1 200 OK
+ * Content-Type: application/json
+ *
+{
+    "role": "citizen",
+    "firstName": "Bob",
+    "lastName": "Lesponge",
+    "createdAt": "2018-03-16T15:18:35.754Z",
+    "updatedAt": "2018-03-16T15:18:35.754Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/users/5aabe04b68f49609145bfcd3"
+        },
+        {
+            "rel": "issues",
+            "href": "/issues/?user=5aabe04b68f49609145bfcd3"
+        }
+    ],
+    "issuesCount": 2
+}
+ * 
  * @apiUse userInSuccessResponse
+ * 
+ * @apiUse issue_404_userId_ValidationError
+ * @apiUse issue_422_userId_ValidationError
  */
 router.get('/:id', middlewares.findUserById, function(req, res, next) {
   countIssuesByUser([req.user], function(err, results) {
@@ -154,8 +192,38 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  * @apiVersion 1.0.0
  * @apiDescription Update a single user.
  *
- * @apiUse userParams
+ * @apiExample Example
+ * PATCH /users/5aabe03a68f49609145bfcd2 HTTP/1.1
+
+{
+	"lastName": "Dupont-Delamotte"
+}
+ * 
+ * @apiUse userParamsInPatch
  * @apiUse userInSuccessResponse
+ * 
+ * @apiSuccessExample 200 OK
+ * HTTP/1.1 200 OK
+ * Content-Type: application/json
+ * 
+{
+    "role": "manager",
+    "firstName": "Paul-Henri",
+    "lastName": "Dupont-Delamotte",
+    "createdAt": "2018-03-16T15:18:18.885Z",
+    "updatedAt": "2018-03-21T13:17:28.467Z",
+    "links": [
+        {
+            "rel": "self",
+            "href": "/users/5aabe03a68f49609145bfcd2"
+        }
+    ]
+}
+ *
+ * 
+ * @apiUse issue_404_userId_ValidationError
+ * @apiUse issue_422_userId_ValidationError
+ * 
  */
 router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, function(req, res, next) {
   let userToPatch = req.user;
@@ -175,10 +243,14 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  * @apiVersion 1.0.0
  * @apiDescription Delete a single user.
  *
- * @apiUse userId
+ * @apiExample Example
+ * DELETE /users/5aaf71ca3ad2ed2160c93639 HTTP/1.1
+ * 
+ * @apiSuccessExample Success Response
+ * HTTP/1.1 204 No content
+ * Content-Type: application/json
  *
- * @apiSuccessExample {json} Success Response
- *    HTTP/1.1 204 No Content
+ * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user, e.g. : `507f191e810c19729de860ea`
  */
 router.delete('/:id', function(req, res, next) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
@@ -260,4 +332,41 @@ function serializeUsers(users, issueCountAggregation){
  * @apiParam {String{2..20}} firstName User's first name
  * @apiParam {String{2..20}} lastName User's last name
  * @apiParam {String="manager","citizen"} [role] User's role. If not specified, defaults to `"citizen"` when the user is created.
+ */
+
+ /**
+ * @apiDefine userParamsInPatch
+ * @apiParam {String{2..20}} [firstName] User's first name
+ * @apiParam {String{2..20}} [lastName] User's last name
+ * @apiParam {String="manager","citizen"} [role] User's role. If not specified, defaults to `"citizen"` when the user is created.
+ */
+
+
+ /**
+ * @apiDefine issue_404_userId_ValidationError
+ *
+ * @apiError {Object} 404/NotFound The id specified is well-formed but no user was found with this id.
+ *
+ * @apiErrorExample {json} 404 Not Found
+ * HTTP/1.1 404 Not Found
+ * Content-Type: application/json
+ * 
+{
+    "message": "No user found with ID 5aaf71ca3ad2ed2160c93638"
+}
+ */
+
+/**
+ * @apiDefine issue_422_userId_ValidationError
+ *
+ * @apiError {Object} 422/UnprocessableEntity The specified userId is invalid
+ *
+ * @apiErrorExample {json} 422 Unprocessable Entity
+ * HTTP/1.1 422 Unprocessable Entity
+ * Content-Type: application/json
+ * 
+ * {
+ *    "message": "User validation failed: userId: Path `userId` is invalid."
+ * }
+ * 
  */
