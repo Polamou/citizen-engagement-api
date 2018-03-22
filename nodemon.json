@@ -1,0 +1,10 @@
+{
+  "watch": [
+    "app.js",
+    "middlewares.js",
+    "errors.js",
+    "bin/www",
+    "models/**.js",
+    "routes/**.js"
+  ]
+}
