@@ -147,7 +147,7 @@ router.get('/', function(req, res, next) {
  * GET /users/5aabe04b68f49609145bfcd3 HTTP/1.1
  *
  * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the user
- * 
+ *
  * @apiSuccessExample 200 OK
  * HTTP/1.1 200 OK
  * Content-Type: application/json
@@ -170,9 +170,9 @@ router.get('/', function(req, res, next) {
     ],
     "issuesCount": 2
 }
- * 
+ *
  * @apiUse userInSuccessResponse
- * 
+ *
  * @apiUse issue_404_userId_ValidationError
  * @apiUse issue_422_userId_ValidationError
  */
@@ -191,6 +191,7 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  * @apiGroup User
  * @apiVersion 1.0.0
  * @apiDescription Update a single user.
+ * **Notice** Extra properties will be ignored by the API without further notice.
  *
  * @apiExample Example
  * PATCH /users/5aabe03a68f49609145bfcd2 HTTP/1.1
@@ -198,14 +199,14 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
 {
 	"lastName": "Dupont-Delamotte"
 }
- * 
+ *
  * @apiUse userParamsInPatch
  * @apiUse userInSuccessResponse
- * 
+ *
  * @apiSuccessExample 200 OK
  * HTTP/1.1 200 OK
  * Content-Type: application/json
- * 
+ *
 {
     "role": "manager",
     "firstName": "Paul-Henri",
@@ -220,10 +221,10 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
     ]
 }
  *
- * 
+ *
  * @apiUse issue_404_userId_ValidationError
  * @apiUse issue_422_userId_ValidationError
- * 
+ *
  */
 router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, function(req, res, next) {
   let userToPatch = req.user;
@@ -245,7 +246,7 @@ router.patch('/:id', middlewares.findUserById, middlewares.filterUserReq, functi
  *
  * @apiExample Example
  * DELETE /users/5aaf71ca3ad2ed2160c93639 HTTP/1.1
- * 
+ *
  * @apiSuccessExample Success Response
  * HTTP/1.1 204 No content
  * Content-Type: application/json
@@ -350,7 +351,7 @@ function serializeUsers(users, issueCountAggregation){
  * @apiErrorExample {json} 404 Not Found
  * HTTP/1.1 404 Not Found
  * Content-Type: application/json
- * 
+ *
 {
     "message": "No user found with ID 5aaf71ca3ad2ed2160c93638"
 }
@@ -364,9 +365,9 @@ function serializeUsers(users, issueCountAggregation){
  * @apiErrorExample {json} 422 Unprocessable Entity
  * HTTP/1.1 422 Unprocessable Entity
  * Content-Type: application/json
- * 
+ *
  * {
  *    "message": "User validation failed: userId: Path `userId` is invalid."
  * }
- * 
+ *
  */

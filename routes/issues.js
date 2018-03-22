@@ -13,11 +13,11 @@ const middlewares = require('../middlewares');
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Registers a new issue.
- * 
+ *
  * @apiExample Example
  * POST /issues HTTP/1.1
  * Content-Type: application/json
- * 
+ *
 {
   "description": "Il y a un campement de canards sans-papiers près du canal.",
   "imageUrl": "https://www.example.com/image98.jpg",
@@ -35,7 +35,7 @@ const middlewares = require('../middlewares');
   ],
   "userId": "5aabe03a68f49609145bfcd2"
 }
- * 
+ *
  * @apiSuccessExample 201 Created
  * HTTP/1.1 201 Created
  * Content-Type: application/json
@@ -75,7 +75,7 @@ const middlewares = require('../middlewares');
  * @apiUse issueInResponseBody
  * @apiUse issueInPostResponseBody
  * @apiUse issueInPostValidationError
- * 
+ *
  */
 router.post('/', middlewares.filterIssueReq, function(req, res, next) {
     // Create a new document from the JSON in the request body
@@ -98,7 +98,7 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a paginated list of issues ordered by date of creation (in descending order).
- * 
+ *
  * @apiExample Example
  *     GET /issues HTTP/1.1
  * @apiExample Example with query parameter (filter by user)
@@ -112,9 +112,9 @@ router.post('/', middlewares.filterIssueReq, function(req, res, next) {
  * @apiParam (URL query parameters) {number} [pageSize] The number of elements to retrieve in one page (defaults to 100)<br />Size range: `1..100`
  * @apiUse issueInResponseBody
  * @apiUse issueInGetOrPatchResponseBody
- * 
- * @apiSuccess (Response headers) {String} link Links to the first, previous, next and last pages of the collection (if applicable), formatted as per [RFC 5988](https://tools.ietf.org/html/rfc5988). 
- * 
+ *
+ * @apiSuccess (Response headers) {String} link Links to the first, previous, next and last pages of the collection (if applicable), formatted as per [RFC 5988](https://tools.ietf.org/html/rfc5988).
+ *
  * @apiSuccessExample 200 OK
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -212,7 +212,7 @@ Link <https://polamou-citizen-engagement-api.herokuapp.com/issues?page=2&pageSiz
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Retrieves a single issue.
- * 
+ *
  * @apiExample Example
  * GET /issues/58b2926f5e1def0123e97281 HTTP/1.1
  *
@@ -250,10 +250,10 @@ Link <https://polamou-citizen-engagement-api.herokuapp.com/issues?page=2&pageSiz
  *
  * @apiUse issueInResponseBody
  * @apiUse issueInGetOrPatchResponseBody
- * 
+ *
  * @apiUse issue_404_issueId_ValidationError
  * @apiUse issue_422_issueId_ValidationError
- * 
+ *
  */
 router.get('/:id', middlewares.findIssueById, function(req, res, next) {
   res.send(req.issue);
@@ -266,7 +266,8 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Update a single issue.
- * 
+ * **Notice** Extra properties will be ignored by the API without further notice.
+ *
  * @apiExample Example
  * PATCH /issues/5aaf71ca3ad2ed2160c93639 HTTP/1.1
 
@@ -313,13 +314,13 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
  * @apiParam (URL path parameters) {String} id Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of the issue
  *
  * @apiUse issueInUpdateRequestBody
- * 
+ *
  * @apiUse issueInResponseBody
  * @apiUse issueInGetOrPatchResponseBody
- * 
+ *
  * @apiUse issue_404_issueId_ValidationError
  * @apiUse issue_422_issueId_ValidationError
- * 
+ *
  *
  */
 router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, middlewares.validateStatusChange, function(req, res, next) {
@@ -340,10 +341,10 @@ router.patch('/:id', middlewares.findIssueById, middlewares.filterIssueReq, midd
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Delete a single issue.
- * 
+ *
  * @apiExample Example
  * DELETE /issues/5aaf71ca3ad2ed2160c93639 HTTP/1.1
- * 
+ *
  * @apiSuccessExample Success Response
  * HTTP/1.1 204 No content
  * Content-Type: application/json
@@ -378,7 +379,7 @@ router.delete('/:id', middlewares.findIssueById, function(req, res, next) {
 */
 function queryIssues(req){
   let query = Issue.find();
-  
+
   if(Array.isArray(req.query.user)){
     const users = req.query.user.filter(ObjectId.isValid);
     query = query.where('userId').in(users);
@@ -406,17 +407,17 @@ function validateStatus(status){
  * @apiParam (Request body) {String{0..1000}} [description] A detailed description of the issue
  * @apiParam (Request body) {String{0..500}} [imageUrl] A URL to a picture of the issue
  * @apiParam (Request body) {Point} geolocation A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is, e.g. :
- * 
+ *
  * `{ type: "Point", coordinates: [ 40, 5 ] }`
  *
  * @apiParam (Request body) {String[]} [tags] User-defined tags to describe the issue (e.g. "accident", "broken")
  * @apiParam (Request body) {String} userId Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of an existing user, e.g. : `507f191e810c19729de860ea`
- * 
+ *
 */
 
 /**
 * @apiDefine issueInPostRequestBody
-* 
+*
 * @apiParam (Request body) {String="new"} [status] The status of the issue. If not specified, defaults to `"new"` when the issue is created.
 */
 
@@ -426,12 +427,12 @@ function validateStatus(status){
  * @apiParam (Request body) {String{0..1000}} [description] A detailed description of the issue
  * @apiParam (Request body) {String{0..500}} [imageUrl] A URL to a picture of the issue
  * @apiParam (Request body) {Point} [geolocation] A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is, e.g. :
- * 
+ *
  * `{ type: "Point", coordinates: [ 40, 5 ] }`
  *
  * @apiParam (Request body) {String[]} [tags] User-defined tags to describe the issue (e.g. "accident", "broken")
  * @apiParam (Request body) {String} userId Unique identifier ([12-byte hexadecimal string](https://docs.mongodb.com/manual/reference/method/ObjectId/)) of an existing user, e.g. : `507f191e810c19729de860ea`
- * 
+ *
  * @apiParam (Request body) {String="new","inProgress","canceled","completed"} [status] The status of the issue:
  *
  * * Defaults to `"new"` when the issue is created
@@ -439,17 +440,17 @@ function validateStatus(status){
  * * Change from `"new"` or `"inProgress"` to `"canceled"` to indicate that a city employee has determined this is not a real issue
  * * Change from `"inProgress"` to `"completed"` to indicate that the issue has been resolved
 */
- 
+
 /**
  * @apiDefine issueInResponseBody
- * 
+ *
  * @apiSuccess (Response body) {String} [description] A detailed description of the issue
  * @apiSuccess (Response body) {String} [imageUrl] A URL to a picture of the issue
  * @apiSuccess (Response body) {Point} geolocation A [GeoJSON point](https://docs.mongodb.com/manual/reference/geojson/#point) indicating where the issue is
  *
  * @apiSuccess (Response body) {String[]} tags User-defined tags to describe the issue. If no tag has been specified, returns an empty array: `"tags": []`.
  * @apiSuccess (Response body) {Object[]} links An array of two objects with two properties each:
- * 
+ *
  * * `rel`: relationship between the issue and the linked resource, either `self` or `user`.
  * * `href`: relative hyperlink reference to the linked resource within the API context
  *
@@ -459,14 +460,14 @@ function validateStatus(status){
 
 /**
  * @apiDefine issueInPostResponseBody
- * 
+ *
  * @apiSuccess (Response body) {String} status The status of the issue
  *
 */
 
 /**
  * @apiDefine issueInGetOrPatchResponseBody
- * 
+ *
  * @apiSuccess (Response body) {String} status The status of the issue:
  *
  * * `"new"` : default value when the issue is created
@@ -484,7 +485,7 @@ function validateStatus(status){
  * @apiErrorExample {json} 422 Unprocessable Entity
  * HTTP/1.1 422 Unprocessable Entity
  * Content-Type: application/json
- * 
+ *
  * {
  *    "message": "Issue validation failed: userId: Path `userId` is required."
  * }
@@ -498,7 +499,7 @@ function validateStatus(status){
  * @apiErrorExample {json} 404 Not Found
  * HTTP/1.1 404 Not Found
  * Content-Type: application/json
- * 
+ *
 {
     "message": "No issue found with ID 5aaf71ca3ad2ed2160c93638"
 }
@@ -512,24 +513,24 @@ function validateStatus(status){
  * @apiErrorExample {json} 422 Unprocessable Entity
  * HTTP/1.1 422 Unprocessable Entity
  * Content-Type: application/json
- * 
+ *
  * {
  *    "message": "Issue validation failed: userId: Path `userId` is invalid."
  * }
- * 
+ *
  */
 
 /**
  * @apiDefine issue_422_issueId_ValidationError
- * 
+ *
  * @apiError {Object} 422/UnprocessableEntity The specified issueId is invalid
  *
  * @apiErrorExample {json} 422 Unprocessable Entity
  * HTTP/1.1 422 Unprocessable Entity
  * Content-Type: application/json
- * 
+ *
  * {
  *    "message": "Issue validation failed: issueId: Path `issueId` is invalid."
  * }
- * 
+ *
  */
