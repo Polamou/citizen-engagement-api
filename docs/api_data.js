@@ -865,7 +865,7 @@ define({ "api": [
     "name": "GetUsers",
     "group": "User",
     "version": "1.0.0",
-    "description": "<p>Retrieves a list of users ordered by date of creation (in descendant order).</p>",
+    "description": "<p>Retrieves a list of users ordered by lastName (in ascendant order).</p>",
     "examples": [
       {
         "title": "Example",
