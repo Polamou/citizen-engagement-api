@@ -60,7 +60,7 @@ module.exports = {
       if (typeof process.env.APP_URL !== 'undefined'){
         return process.env.APP_URL
       } else {
-        return 'http://localhost:3003/'
+        return 'http://localhost:3000/'
       }
     }
     console.log(url());
