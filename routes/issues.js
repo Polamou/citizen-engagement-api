@@ -266,7 +266,8 @@ router.get('/:id', middlewares.findIssueById, function(req, res, next) {
  * @apiGroup Issue
  * @apiVersion 1.0.0
  * @apiDescription Update a single issue.
- * **Notice** Extra properties will be ignored by the API without further notice.
+ *
+ *  **Notice** : Extra properties will be ignored by the API without further notice.
  *
  * @apiExample Example
  * PATCH /issues/5aaf71ca3ad2ed2160c93639 HTTP/1.1
