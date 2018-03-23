@@ -191,7 +191,8 @@ router.get('/:id', middlewares.findUserById, function(req, res, next) {
  * @apiGroup User
  * @apiVersion 1.0.0
  * @apiDescription Update a single user.
- * **Notice** Extra properties will be ignored by the API without further notice.
+ *
+ *  **Notice** : Extra properties will be ignored by the API without further notice.
  *
  * @apiExample Example
  * PATCH /users/5aabe03a68f49609145bfcd2 HTTP/1.1

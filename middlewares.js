@@ -103,15 +103,12 @@ module.exports = {
     next();
   },
   filterIssueReq: function(req, res, next) {
+    if (ObjectId.isValid(req.body.userId)){
     req.bodyFiltered = _.pick(req.body, ['status', 'description', 'imageUrl', 'geolocation', 'tags', 'userId']);
-    if (!_.isUndefined(req.bodyFiltered.userId)){
-    if (ObjectId.isValid(req.bodyFiltered.userId)) {
-      next();
-    } else {
-      next(errors.unprocessableError(`userId : ${req.bodyFiltered.userId} is not valid.`));
-    }
-  }
     next();
+  } else {
+    return next(errors.unprocessableError(`User ID : ${req.body.userId} is not valid.`));
+  }
   },
   /*
    * This function validate the status change of an issue
