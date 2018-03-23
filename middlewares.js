@@ -70,11 +70,11 @@ module.exports = {
     if (page > 1) {
       links.first = {
         rel: 'first',
-        url: `${url()&resourceHref}?page=1&pageSize=${pageSize}`
+        url: `${url()+resourceHref}?page=1&pageSize=${pageSize}`
       };
       links.prev = {
         rel: 'prev',
-        url: `${url()&resourceHref}?page=${page - 1}&pageSize=${pageSize}`
+        url: `${url()+resourceHref}?page=${page - 1}&pageSize=${pageSize}`
       };
     }
 
@@ -82,11 +82,11 @@ module.exports = {
     if (page < maxPage) {
       links.next = {
         rel: 'next',
-        url: `${url()&resourceHref}?page=${page + 1}&pageSize=${pageSize}`
+        url: `${url()+resourceHref}?page=${page + 1}&pageSize=${pageSize}`
       };
       links.last = {
         rel: 'last',
-        url: `${url()&resourceHref}?page=${maxPage}&pageSize=${pageSize}`
+        url: `${url()+resourceHref}?page=${maxPage}&pageSize=${pageSize}`
       };
     }
 
