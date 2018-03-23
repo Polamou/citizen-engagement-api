@@ -60,7 +60,7 @@ module.exports = {
       if (typeof process.env.APP_URL !== 'undefined'){
         return process.env.APP_URL
       } else {
-        return 'http://localhost:3000/'
+        return 'http://localhost:3003/'
       }
     }
     console.log(url());
@@ -70,11 +70,11 @@ module.exports = {
     if (page > 1) {
       links.first = {
         rel: 'first',
-        url: `${url()}?page=1&pageSize=${pageSize}`
+        url: `${url()&&resourceHref}?page=1&pageSize=${pageSize}`
       };
       links.prev = {
         rel: 'prev',
-        url: `${url()}?page=${page - 1}&pageSize=${pageSize}`
+        url: `${url()&&resourceHref}?page=${page - 1}&pageSize=${pageSize}`
       };
     }
 
@@ -82,11 +82,11 @@ module.exports = {
     if (page < maxPage) {
       links.next = {
         rel: 'next',
-        url: `${url()}?page=${page + 1}&pageSize=${pageSize}`
+        url: `${url()&&resourceHref}?page=${page + 1}&pageSize=${pageSize}`
       };
       links.last = {
         rel: 'last',
-        url: `${url()}?page=${maxPage}&pageSize=${pageSize}`
+        url: `${url()&&resourceHref}?page=${maxPage}&pageSize=${pageSize}`
       };
     }
 
